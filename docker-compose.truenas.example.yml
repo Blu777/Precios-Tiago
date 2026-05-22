@@ -4,6 +4,7 @@ services:
   # ----------------------------------------
   frontend:
     image: ghcr.io/blu777/precios-tiago/miraprecios-web:latest
+    pull_policy: always
     container_name: miraprecios_web
     restart: always
     ports:
@@ -25,6 +26,7 @@ services:
   # ----------------------------------------
   scraper:
     image: ghcr.io/blu777/precios-tiago/miraprecios-scraper:latest
+    pull_policy: always
     container_name: miraprecios_crawler
     restart: "no"
     volumes:

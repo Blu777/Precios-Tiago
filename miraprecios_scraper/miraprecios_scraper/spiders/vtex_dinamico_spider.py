@@ -34,8 +34,8 @@ class VtexDinamicoSpider(scrapy.Spider):
         self.base_url = config['base_url']
         self.supermercado_name = config['name']
 
-    def start_requests(self):
-        self.logger.info(f"Iniciando start_requests para {self.supermercado_name} (Base: {self.base_url})")
+    async def start(self):
+        self.logger.info(f"Iniciando start para {self.supermercado_name} (Base: {self.base_url})")
         tree_url = f"{self.base_url}/api/catalog_system/pub/category/tree/3/"
         
         headers = {

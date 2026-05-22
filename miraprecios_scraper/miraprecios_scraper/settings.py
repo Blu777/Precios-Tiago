@@ -21,7 +21,7 @@ TELNETCONSOLE_ENABLED = False
 
 # Activar pipelines
 ITEM_PIPELINES = {
-   'miraprecios_scraper.pipelines.DataCleaningPipeline': 300,
+   'miraprecios_scraper.pipelines.PriceSanitizationPipeline': 300,
    'miraprecios_scraper.pipelines.JsonWriterPipeline': 400,
 }
 

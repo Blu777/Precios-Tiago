@@ -20,6 +20,8 @@ class VtexDinamicoSpider(scrapy.Spider):
     }
 
     def __init__(self, tienda=None, *args, **kwargs):
+        if tienda:
+            kwargs['tienda'] = tienda
         super(VtexDinamicoSpider, self).__init__(*args, **kwargs)
         
         # Validar el argumento que llega por línea de comandos
@@ -33,6 +35,7 @@ class VtexDinamicoSpider(scrapy.Spider):
         self.supermercado_name = config['name']
 
     def start_requests(self):
+        self.logger.info(f"Iniciando start_requests para {self.supermercado_name} (Base: {self.base_url})")
         tree_url = f"{self.base_url}/api/catalog_system/pub/category/tree/3/"
         
         headers = {
@@ -40,13 +43,16 @@ class VtexDinamicoSpider(scrapy.Spider):
             'Content-Type': 'application/json'
         }
         
-        yield scrapy.Request(
+        req = scrapy.Request(
             url=tree_url,
             method='GET',
             headers=headers,
             callback=self.parse_category_tree,
-            meta={'headers': headers}
+            meta={'headers': headers},
+            dont_filter=True
         )
+        self.logger.info(f"Generado Request inicial: {req.url}")
+        yield req
 
     def parse_category_tree(self, response):
         try:

@@ -4,7 +4,7 @@ services:
     container_name: miraprecios_web
     restart: always
     ports:
-      - "3000:3000"
+      - "9333:3000"
     volumes:
       # Modifica esta ruta para que apunte exactamente al dataset de tu TrueNAS
       # Debe ser la MISMA ruta física host en la que el scraper guarda sus JSONs

@@ -1,0 +1,34 @@
+services:
+  # ----------------------------------------
+  # 1. El Frontend Web (Next.js Standalone)
+  # ----------------------------------------
+  frontend:
+    image: ghcr.io/blu777/precios-tiago/miraprecios-web:latest
+    container_name: miraprecios_web
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      # IMPORTANTE: Cambia esta ruta a la real de tu disco en TrueNAS
+      - /mnt/tu_pool/datos/miraprecios/data:/app/data
+    environment:
+      # Variables vitales para Next.js en producción
+      - NODE_ENV=production
+      - PORT=3000
+      # Permite que la app responda hacia afuera del contenedor
+      - HOSTNAME=0.0.0.0 
+      - TZ=America/Argentina/Buenos_Aires
+
+  # ----------------------------------------
+  # 2. El Scraper de Precios (Python)
+  # ----------------------------------------
+  scraper:
+    image: ghcr.io/blu777/precios-tiago/miraprecios-scraper:latest
+    container_name: miraprecios_crawler
+    restart: "no"
+    volumes:
+      # La ruta del host debe ser exactamente la misma que la del frontend
+      - /mnt/tu_pool/datos/miraprecios/data:/app/data
+    environment:
+      # Para que los timestamps de guardado reflejen el horario argentino
+      - TZ=America/Argentina/Buenos_Aires

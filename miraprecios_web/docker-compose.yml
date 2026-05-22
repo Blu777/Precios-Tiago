@@ -1,0 +1,14 @@
+services:
+  frontend:
+    image: ghcr.io/blu777/precios-tiago/miraprecios-web:latest
+    container_name: miraprecios_web
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      # Modifica esta ruta para que apunte exactamente al dataset de tu TrueNAS
+      # Debe ser la MISMA ruta física host en la que el scraper guarda sus JSONs
+      - /mnt/tu_pool/datos/miraprecios/data:/app/data
+    environment:
+      - NODE_ENV=production
+      # - TZ=America/Argentina/Buenos_Aires # Útil si manejas timestamps locales en la UI

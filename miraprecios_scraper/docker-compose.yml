@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   miraprecios:
-    build: .
+    image: ghcr.io/blu777/precios-tiago/miraprecios-scraper:latest
     container_name: miraprecios_crawler
     restart: "no" # No queremos que corra infinitamente, solo cuando se lo llama
     volumes:
       # Mapeamos la ruta relativa ./data de TrueNAS hacia /app/data del contenedor
-      - ./data:/app/data
+      - /mnt/tu_pool/datos/miraprecios/data:/app/data
     environment:
       - TZ=America/Argentina/Buenos_Aires # Ajustar huso horario para el timestamp

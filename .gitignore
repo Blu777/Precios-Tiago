@@ -1,0 +1,27 @@
+# Dependencias de Node
+node_modules/
+.next/
+out/
+
+# Entornos virtuales y caché de Python
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+
+# Carpetas de datos y bases de datos locales
+miraprecios_scraper/data/
+miraprecios_web/data/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# Variables de entorno
+.env
+.env.local
+
+# Archivos de SO
+.DS_Store
+Thumbs.db

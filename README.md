@@ -50,15 +50,17 @@ Asegúrate de:
 - Reemplazar las credenciales de la imagen por tu usuario real de GitHub.
 - Reemplazar las rutas de los volúmenes (`/mnt/tu_pool/...`) por la ruta absoluta de tu dataset creado en el paso 2.
 
-### 4. Automatizar la Araña Diaria (Cron Jobs)
-El contenedor web correrá permanentemente respondiendo a tus visitas, pero el scraper está configurado para detenerse al terminar su ciclo de scraping (`restart: "no"`). 
+### 4. Automatización Diaria (Smart Daemon)
+A diferencia de versiones anteriores, el scraper ahora funciona como un "Smart Daemon". En lugar de requerir que configures tareas programadas (Cron Jobs) en el sistema operativo o en TrueNAS, el contenedor se gestiona a sí mismo.
 
-Para que los precios de los supermercados se actualicen automáticamente todos los días:
-1. Ve al menú lateral de TrueNAS -> **System Settings -> Advanced -> Cron Jobs** (o Scheduled Tasks).
-2. Programa el siguiente comando para que se ejecute de madrugada (ej: a las 03:00 AM):
-   ```bash
-   docker start miraprecios_crawler
-   ```
+Al encender el contenedor (`docker-compose up -d`), el script detecta la hora actual. Si no son las **10:00 AM**, calculará automáticamente los segundos restantes y entrará en modo suspensión (sleep) hasta alcanzar esa hora exacta.
+
+A las 10:00 AM, despertará y ejecutará la secuencia completa:
+1. Descarga el dataset oficial de SEPA con los precios del día.
+2. Ingesta los precios base en la base de datos local SQLite.
+3. Ejecuta la araña de VTEX para visitar los supermercados y obtener fotografías e información en tiempo real.
+
+**Importante:** Solo asegúrate de que tu `docker-compose.yml` mantenga la directiva `restart: always` para el contenedor del scraper, y que el huso horario (`TZ=America/Argentina/Buenos_Aires`) sea correcto.
 
 ## 💻 Desarrollo Local
 

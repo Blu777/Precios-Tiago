@@ -1,104 +1,200 @@
 import os
 import sys
 import pandas as pd
+import numpy as np
 from sqlalchemy.dialects.sqlite import insert
 
 # Add parent directory to path to import database module
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from miraprecios_scraper.database import get_session, ProductoMaestro
+from miraprecios_scraper.database import get_session, ProductoMaestro, SucursalPrecio
 from miraprecios_scraper.pipelines import DataNormalizationPipeline
 
-def process_sepa_file(filepath):
-    """
-    Lee un CSV del SEPA, normaliza los datos y hace un upsert en la base de datos local SQLite.
-    """
-    print(f"Iniciando ingesta de SEPA desde {filepath}")
-    if not os.path.exists(filepath):
-        print(f"Error: No se encontró el archivo {filepath}")
-        # Creando datos mockeados si no existe el archivo para propósitos de prueba
-        print("Usando datos mockeados para la prueba de humo.")
-        data = [
-            {'ean': '7790040001001', 'nombre': 'Aceite de Girasol', 'marca': 'Marolio', 'contenido': 1.5, 'unidad': 'L'},
-            {'ean': '7790040001002', 'nombre': 'Leche Entera', 'marca': 'La Serenisima', 'contenido': 1.0, 'unidad': 'L'},
-        ]
-        df = pd.DataFrame(data)
-    else:
-        # Aquí mapearemos las columnas exactas del dataset del SEPA
-        # Ajustar los nombres de las columnas según el CSV real
-        try:
-            df = pd.read_csv(filepath)
-            # Ejemplo de mapeo (ajustar luego):
-            # df.rename(columns={'codigo_barras': 'ean', 'producto': 'nombre'}, inplace=True)
-        except Exception as e:
-            print(f"Error al leer CSV: {e}")
-            return
+TARGET_BANDERAS = {
+    'dia': 'dia',
+    'chango mas': 'changomas',
+    'changomas': 'changomas',
+    'jumbo': 'jumbo',
+    'vea': 'vea'
+}
 
-    session = get_session()
+def get_internal_supermarket_id(bandera_nombre):
+    if not isinstance(bandera_nombre, str):
+        return None
+    nombre_lower = bandera_nombre.lower()
+    for key, internal_id in TARGET_BANDERAS.items():
+        if key in nombre_lower:
+            return internal_id
+    return None
+
+def process_sepa_daily_dir(base_dir):
+    print(f"[*] Iniciando ingesta de SEPA desde {base_dir}")
+    if not os.path.exists(base_dir):
+        print(f"[-] Error: No se encontró el directorio {base_dir}")
+        return
+
+    csvs_dir = os.path.join(base_dir, "csvs")
+    if not os.path.exists(csvs_dir):
+        print(f"[-] No se encontró la carpeta de extractos en {csvs_dir}")
+        return
+
     pipeline = DataNormalizationPipeline()
+    session = get_session()
 
-    records_to_upsert = []
-
-    for index, row in df.iterrows():
-        ean = str(row.get('ean', '')).strip()
-        if not ean:
+    # Primero leer todos los comercios para mapear id_comercio -> internal_id
+    comercio_map = {}
+    print("[*] Leyendo catálogos de comercios...")
+    
+    for folder in os.listdir(csvs_dir):
+        folder_path = os.path.join(csvs_dir, folder)
+        if not os.path.isdir(folder_path):
             continue
+            
+        comercio_file = os.path.join(folder_path, "comercio.csv")
+        if os.path.exists(comercio_file):
+            try:
+                df_com = pd.read_csv(comercio_file, sep='|', encoding='utf-8')
+                for _, row in df_com.iterrows():
+                    id_com = row.get('id_comercio')
+                    bandera = row.get('comercio_bandera_nombre')
+                    internal_id = get_internal_supermarket_id(bandera)
+                    if internal_id:
+                        comercio_map[id_com] = internal_id
+            except Exception as e:
+                print(f"[-] Error leyendo {comercio_file}: {e}")
 
-        raw_nombre = row.get('nombre', '')
+    print(f"[+] Se mapearon {len(comercio_map)} comercios objetivo.")
+    
+    if not comercio_map:
+        print("[-] No se encontraron comercios objetivo. Terminando ingesta.")
+        session.close()
+        return
+
+    # Leer productos.csv de las carpetas que contengan comercios objetivo
+    print("[*] Procesando productos...")
+    all_products = []
+
+    for folder in os.listdir(csvs_dir):
+        folder_path = os.path.join(csvs_dir, folder)
+        if not os.path.isdir(folder_path):
+            continue
+            
+        prod_file = os.path.join(folder_path, "productos.csv")
+        if os.path.exists(prod_file):
+            try:
+                df_prod = pd.read_csv(prod_file, sep='|', encoding='utf-8', low_memory=False)
+                
+                # Filtrar solo los id_comercio que nos interesan
+                df_prod = df_prod[df_prod['id_comercio'].isin(comercio_map.keys())]
+                
+                if not df_prod.empty:
+                    # Asignar internal_id
+                    df_prod['internal_id'] = df_prod['id_comercio'].map(comercio_map)
+                    all_products.append(df_prod)
+            except Exception as e:
+                print(f"[-] Error leyendo {prod_file}: {e}")
+
+    if not all_products:
+        print("[-] No se encontraron productos para los supermercados objetivo.")
+        session.close()
+        return
+
+    # Consolidar todos los productos
+    df_all = pd.concat(all_products, ignore_index=True)
+    
+    # Quedarnos con el primer precio que encontremos por EAN y supermercado
+    # (simplificación ya que puede haber muchas sucursales)
+    df_all = df_all.drop_duplicates(subset=['productos_ean', 'internal_id'])
+    
+    records_maestro = []
+    records_precio = []
+    
+    # Optimización: armar listas para el bulk insert
+    for _, row in df_all.iterrows():
+        ean = str(row.get('productos_ean', '')).strip()
+        if not ean or ean == 'nan':
+            continue
+            
+        raw_nombre = row.get('productos_descripcion', '')
         nombre_estandarizado = pipeline.normalize_text(raw_nombre)
-        marca = pipeline.normalize_text(row.get('marca', ''))
+        marca = pipeline.normalize_text(row.get('productos_marca', ''))
         
-        # En el dataset real de SEPA, el contenido y la unidad a veces ya vienen separados
-        contenido_neto = row.get('contenido')
-        unidad_medida = row.get('unidad')
+        contenido_neto = row.get('productos_cantidad_presentacion')
+        unidad_medida = row.get('productos_unidad_medida_presentacion')
+        
+        precio = row.get('productos_precio_lista')
+        if pd.isna(precio):
+            continue
+            
+        supermercado_id = row.get('internal_id')
 
-        # Si no, usamos la misma lógica del pipeline para extraer de ser necesario
+        # Si no viene contenido/unidad, se extrae del nombre
         if pd.isna(contenido_neto) or pd.isna(unidad_medida):
-            # Extracción del pipeline
             mock_item = {'name': raw_nombre}
             extracted = pipeline.process_item(mock_item, None)
             contenido_neto = extracted.get('net_content')
             unidad_medida = extracted.get('unit')
 
-        records_to_upsert.append({
+        records_maestro.append({
             'ean': ean,
             'nombre_estandarizado': nombre_estandarizado,
             'marca': marca if marca else None,
             'contenido_neto': float(contenido_neto) if not pd.isna(contenido_neto) and contenido_neto else None,
             'unidad_medida': unidad_medida if not pd.isna(unidad_medida) and unidad_medida else None,
-            'categoria_id': None # Por definir según dataset
+        })
+        
+        records_precio.append({
+            'producto_ean': ean,
+            'supermercado_id': supermercado_id,
+            'precio_actual': float(precio),
+            'precio_lista': float(precio),
+            'url_imagen': None,
+            'product_url': None
         })
 
-    if not records_to_upsert:
-        print("No hay registros válidos para insertar.")
-        return
+    # Upsert Maestro
+    if records_maestro:
+        # Deduplicar maestro por ean
+        maestro_df = pd.DataFrame(records_maestro).drop_duplicates(subset=['ean'])
+        maestro_dicts = maestro_df.to_dict('records')
+        
+        stmt_m = insert(ProductoMaestro).values(maestro_dicts)
+        on_conflict_m = stmt_m.on_conflict_do_update(
+            index_elements=['ean'],
+            set_={
+                'nombre_estandarizado': stmt_m.excluded.nombre_estandarizado,
+                'marca': stmt_m.excluded.marca
+            }
+        )
+        try:
+            session.execute(on_conflict_m)
+            session.commit()
+            print(f"[+] Upsert exitoso de {len(maestro_dicts)} registros en ProductoMaestro.")
+        except Exception as e:
+            session.rollback()
+            print(f"[-] Error en ProductoMaestro: {e}")
 
-    # Usar SQLite dialect para upsert
-    stmt = insert(ProductoMaestro).values(records_to_upsert)
-    
-    # Si hay conflicto en 'ean', actualizamos los datos
-    update_dict = {
-        'nombre_estandarizado': stmt.excluded.nombre_estandarizado,
-        'marca': stmt.excluded.marca,
-        'contenido_neto': stmt.excluded.contenido_neto,
-        'unidad_medida': stmt.excluded.unidad_medida
-    }
-    
-    on_conflict_stmt = stmt.on_conflict_do_update(
-        index_elements=['ean'],
-        set_=update_dict
-    )
+    # Upsert SucursalPrecio
+    if records_precio:
+        stmt_p = insert(SucursalPrecio).values(records_precio)
+        on_conflict_p = stmt_p.on_conflict_do_update(
+            index_elements=['producto_ean', 'supermercado_id'],
+            set_={
+                'precio_actual': stmt_p.excluded.precio_actual,
+                'precio_lista': stmt_p.excluded.precio_lista
+            }
+        )
+        try:
+            session.execute(on_conflict_p)
+            session.commit()
+            print(f"[+] Upsert exitoso de {len(records_precio)} registros en SucursalPrecio.")
+        except Exception as e:
+            session.rollback()
+            print(f"[-] Error en SucursalPrecio: {e}")
 
-    try:
-        session.execute(on_conflict_stmt)
-        session.commit()
-        print(f"Upsert exitoso de {len(records_to_upsert)} registros maestros.")
-    except Exception as e:
-        session.rollback()
-        print(f"Error durante el upsert: {e}")
-    finally:
-        session.close()
+    session.close()
 
 if __name__ == "__main__":
-    filepath = sys.argv[1] if len(sys.argv) > 1 else 'sepa_dataset.csv'
-    process_sepa_file(filepath)
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    data_dir = os.path.join(project_root, "data", "sepa_daily")
+    process_sepa_daily_dir(data_dir)

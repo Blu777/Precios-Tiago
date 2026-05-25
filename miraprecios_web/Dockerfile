@@ -9,8 +9,8 @@ WORKDIR /app
 # Copiamos los archivos de manifiesto de npm
 COPY package.json package-lock.json* ./
 
-# Instalar dependencias limpiamente para producción
-RUN npm ci || npm install
+# Instalar dependencias
+RUN npm install
 
 # ----------------------------------------
 # Fase 2: Construcción (builder)

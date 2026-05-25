@@ -45,22 +45,15 @@ ENV DATABASE_URL "file:/app/data/miraprecios.db"
 # Instalar openssl requerido por el motor de Prisma
 RUN apk add --no-cache openssl
 
-# Seguridad: Crear grupo y usuario de sistema sin privilegios root
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# Crear el directorio para montar el volumen de datos e igualar permisos
-RUN mkdir data && chown nextjs:nodejs data
+# Crear el directorio para montar el volumen de datos (correrá como root)
+RUN mkdir data
 
 # Copiamos recursos estáticos
 COPY --from=builder /app/public ./public
 
-# Copiamos el build standalone generado y los estáticos, asignando propiedad al usuario seguro
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Cambiar al usuario sin privilegios
-USER nextjs
+# Copiamos el build standalone generado y los estáticos
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
 EXPOSE 3000
 ENV PORT 3000

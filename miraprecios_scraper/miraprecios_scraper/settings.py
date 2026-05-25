@@ -67,17 +67,18 @@ ROTATING_PROXY_PAGE_RETRY_TIMES = 5
 # Activar pipelines
 ITEM_PIPELINES = {
    'miraprecios_scraper.pipelines.DataNormalizationPipeline': 300,
+   'miraprecios_scraper.pipelines.SQLitePipeline': 400,
 }
 
-# Configuración de exportación nativa de Scrapy (Feed Exporters) para I/O Asíncrono
-FEEDS = {
-    'data/temp_results.json': {
-        'format': 'json',
-        'overwrite': True,
-        'encoding': 'utf8',
-        'indent': 4,
-    }
-}
+# Configuración de exportación nativa de Scrapy (Deshabilitada, ahora usamos SQLite)
+# FEEDS = {
+#     'data/temp_results.json': {
+#         'format': 'json',
+#         'overwrite': True,
+#         'encoding': 'utf8',
+#         'indent': 4,
+#     }
+# }
 
 # Configuraciones por defecto modernas
 REQUEST_FINGERPRINTER_IMPLEMENTATION = '2.7'

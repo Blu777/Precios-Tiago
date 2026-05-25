@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/miraprecios.db"
+}
+
+model ProductoMaestro {
+  ean                  String           @id
+  nombre_estandarizado String
+  marca                String?
+  contenido_neto       Float?
+  unidad_medida        String?
+  categoria_id         String?
+  
+  precios_sucursales   SucursalPrecio[]
+}
+
+model SucursalPrecio {
+  id                   Int             @id @default(autoincrement())
+  producto_ean         String
+  supermercado_id      String
+  precio_actual        Float
+  precio_lista         Float?
+  disponible_online    Boolean         @default(true)
+  url_imagen           String?
+  product_url          String?
+  ultima_actualizacion DateTime        @default(now())
+
+  producto             ProductoMaestro @relation(fields: [producto_ean], references: [ean], onDelete: Cascade)
+
+  @@unique([producto_ean, supermercado_id])
+}

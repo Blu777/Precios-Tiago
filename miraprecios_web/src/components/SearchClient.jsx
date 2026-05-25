@@ -25,7 +25,65 @@ export default function SearchClient() {
       fetch(`/api/buscar?q=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
-          setResults(data);
+          // Agrupación y compactación de productos repetidos usando Map para mayor seguridad
+          const agrupados = data.reduce((acc, current) => {
+            const key = current.barcode || current.name;
+            
+            if (!acc.has(key)) {
+              acc.set(key, {
+                barcode: current.barcode,
+                name: current.name,
+                brand: current.brand,
+                weight: current.weight,
+                image_url: current.image_url,
+                sucursales: []
+              });
+            }
+            
+            const productGroup = acc.get(key);
+
+            // Consolidar sucursales (Soporta formato con objeto "precios" o formato plano)
+            if (current.precios) {
+              for (const [supId, priceData] of Object.entries(current.precios)) {
+                if (priceData && priceData.precio_actual) {
+                  // Evitar duplicados del mismo súper para el mismo producto
+                  if (!productGroup.sucursales.some(s => s.id === supId)) {
+                    productGroup.sucursales.push({
+                      id: supId,
+                      precio: priceData.precio_actual,
+                      precioLista: priceData.precio_lista || priceData.precio_actual,
+                      product_url: priceData.product_url
+                    });
+                  }
+                }
+              }
+            } else if (current.supermercado) {
+              if (!productGroup.sucursales.some(s => s.id === current.supermercado)) {
+                productGroup.sucursales.push({
+                  id: current.supermercado,
+                  precio: current.precio || current.precio_actual,
+                  precioLista: current.precio_lista || current.precio || current.precio_actual,
+                  product_url: current.product_url
+                });
+              }
+            }
+            return acc;
+          }, new Map());
+
+          // Calcular metadatos dinámicos y ordenar array de sucursales de MENOR a MAYOR
+          const productosUnificados = Array.from(agrupados.values()).map(prod => {
+            prod.sucursales.sort((a, b) => a.precio - b.precio);
+            if (prod.sucursales.length > 0) {
+              prod.lowestPrice = prod.sucursales[0].precio;
+              prod.highestPrice = prod.sucursales.at(-1).precio;
+            } else {
+              prod.lowestPrice = null;
+              prod.highestPrice = null;
+            }
+            return prod;
+          });
+
+          setResults(productosUnificados);
           setLoading(false);
         })
         .catch(err => {

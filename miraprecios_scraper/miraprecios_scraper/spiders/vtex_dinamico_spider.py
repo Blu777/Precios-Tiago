@@ -28,6 +28,30 @@ class VtexDinamicoSpider(scrapy.Spider):
         }
     }
 
+    CATEGORIAS_EXCLUIDAS = [
+        # Electro y Tecnología
+        'electro', 'tecnologia', 'tecnología', 'tv', 'audio', 'video',
+        'celulares', 'informatica', 'informática', 'climatizacion', 'climatización',
+        
+        # Hogar, Muebles y Deco
+        'hogar', 'bazar', 'muebles', 'decó', 'deco', 'decoracion', 'decoración',
+        'blanco', 'colchones', 'sommiers', 'iluminacion', 'iluminación',
+        
+        # Indumentaria y Deportes
+        'indumentaria', 'ropa', 'calzado', 'deportes', 'textil', 'tiempo libre',
+        'valijas', 'mochilas',
+        
+        # Herramientas, Auto y Jardín
+        'ferreteria', 'ferretería', 'herramientas', 'pintureria', 'pinturería',
+        'jardin', 'jardín', 'neumaticos', 'neumáticos', 'automotor', 'construccion', 'construcción',
+        'camping', 'piletas',
+        
+        # Ocio y Otros
+        'juguetes', 'jugueteria', 'juguetería', 'libreria', 'librería', 'rodados', 'bicicletas',
+        'navidad', 'fiestas'
+    ]
+
+
     def __init__(self, tienda=None, *args, **kwargs):
         if tienda:
             kwargs['tienda'] = tienda
@@ -104,6 +128,13 @@ class VtexDinamicoSpider(scrapy.Spider):
     def _get_leaf_categories(self, category_nodes):
         paths = []
         for node in category_nodes:
+            name = node.get('name', '').lower()
+            
+            # Si el nombre de la categoría contiene alguna palabra excluida, la saltamos a ella y a todos sus hijos
+            if any(excluida in name for excluida in self.CATEGORIAS_EXCLUIDAS):
+                self.logger.info(f"Saltando categoría no de supermercado: {node.get('name')}")
+                continue
+
             children = node.get('children', [])
             if not children:
                 url = node.get('url', '')

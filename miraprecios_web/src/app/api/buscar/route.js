@@ -1,36 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-
-// Helper function to find the latest json file for a given supermarket prefix
-function getLatestFile(dataFolder, prefix) {
-    const normalizedDataFolder = path.normalize(dataFolder);
-    const basePath = path.normalize(process.cwd());
-    if (!normalizedDataFolder.startsWith(basePath)) {
-        return null;
-    }
-    if (!fs.existsSync(normalizedDataFolder)) {
-        return null;
-    }
-    try {
-        const files = fs.readdirSync(normalizedDataFolder);
-        // Match files like: precios_dia_2026_05_22.json
-        const pattern = /^precios_([a-z]+)_\d{4}_\d{2}_\d{2}\.json$/;
-        const matchingFiles = files.filter(f => {
-            const match = f.match(pattern);
-            return match && match[1] === prefix;
-        });
-        if (matchingFiles.length === 0) {
-            return null;
-        }
-        // Alphabetical sort is safe for YYYY_MM_DD suffix
-        matchingFiles.sort();
-        const latestFile = matchingFiles.at(-1);
-        return path.normalize(path.join(normalizedDataFolder, latestFile));
-    } catch (error) {
-        console.error(`Error reading data folder to find latest ${prefix} file:`, error);
-        return null;
-    }
-}
+import { prisma } from '@/lib/prisma'; // Assumes jsconfig.json has path alias for @, or we use relative paths
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
@@ -41,104 +9,67 @@ export async function GET(request) {
         return Response.json([]);
     }
 
-    const searchQuery = query.toLowerCase();
+    const searchQuery = query.trim().toLowerCase();
 
-    // 2. Calcular fecha dinámica
-    const today = new Date();
-    const anio = today.getFullYear();
-    const mes = String(today.getMonth() + 1).padStart(2, '0');
-    const dia = String(today.getDate()).padStart(2, '0');
-    const fechaStr = `${anio}_${mes}_${dia}`;
+    try {
+        // Import prisma locally if path alias fails
+        const { prisma: localPrisma } = await import('../../../lib/prisma.js');
+        const db = localPrisma || prisma;
 
-    // 3. Determinar la ruta a la carpeta compartida 'data/'
-    // (Asumimos que el root del proyecto de Next tiene una carpeta data o un symlink apuntando allí)
-    const dataFolder = path.join(process.cwd(), 'data');
-
-    const tiendas = ['dia', 'changomas', 'jumbo', 'vea'];
-    let productosRaw = [];
-
-    const basePath = path.normalize(process.cwd());
-
-    tiendas.forEach(tienda => {
-        const fileTienda = path.join(dataFolder, `precios_${tienda}_${fechaStr}.json`);
-        let pathTienda = path.normalize(fileTienda);
-        
-        if (!pathTienda.startsWith(basePath)) {
-            console.error("Invalid path detected.");
-            return;
-        }
-
-        // 4. Lectura defensiva comprobando fs.existsSync con fallback al último disponible
-        if (!fs.existsSync(pathTienda)) {
-            console.warn(`Archivo no encontrado para hoy: ${fileTienda}. Buscando último disponible...`);
-            const latestTienda = getLatestFile(dataFolder, tienda);
-            if (latestTienda) {
-                pathTienda = path.normalize(latestTienda);
-                if (!pathTienda.startsWith(basePath)) {
-                    return;
+        // Buscar productos por coincidencia de nombre o marca
+        // Y traer los precios de sus sucursales
+        const productos = await db.productoMaestro.findMany({
+            where: {
+                OR: [
+                    { nombre_estandarizado: { contains: searchQuery } },
+                    { marca: { contains: searchQuery } }
+                ]
+            },
+            include: {
+                precios_sucursales: {
+                    orderBy: {
+                        precio_actual: 'asc'
+                    }
                 }
-                console.log(`Usando archivo fallback para ${tienda}: ${pathTienda}`);
-            } else {
-                console.warn(`No se encontró ningún archivo de datos para ${tienda}.`);
-            }
-        }
+            },
+            take: 50 // Limitamos a 50 resultados para performance
+        });
 
-        if (fs.existsSync(pathTienda)) {
-            try {
-                const dataTienda = JSON.parse(fs.readFileSync(pathTienda, 'utf-8'));
-                // Garantizar consistencia del nombre del supermercado
-                const dataNormalizada = dataTienda.map(p => ({
-                    ...p,
-                    supermarket: p.supermarket ? p.supermarket.toLowerCase() : tienda
-                }));
-                productosRaw = productosRaw.concat(dataNormalizada);
-            } catch (error) {
-                console.error(`Error al leer archivo de ${tienda} (${pathTienda}):`, error);
-            }
-        }
-    });
-
-    // 5. Filtrar por coincidencia en nombre o marca
-    const productosFiltrados = productosRaw.filter(p => {
-        const nombreMatch = p.name ? p.name.toLowerCase().includes(searchQuery) : false;
-        const marcaMatch = p.brand ? p.brand.toLowerCase().includes(searchQuery) : false;
-        return nombreMatch || marcaMatch;
-    });
-
-    // 6. Agrupar productos idénticos
-    // Se usa el nombre en minúsculas y sin espacios laterales como llave de cruce
-    const productosAgrupados = new Map();
-
-    productosFiltrados.forEach(p => {
-        // En un caso real a gran escala, el cruce suele hacerse por EAN/UPC o modelos NLP,
-        // para este proyecto el nombre normalizado funciona como primer gran filtro.
-        const key = p.name.toLowerCase().trim();
-
-        if (!productosAgrupados.has(key)) {
-            productosAgrupados.set(key, {
-                name: p.name,
-                brand: p.brand,
-                image_url: p.image_url,
-                precios: {}
+        // Formatear la salida para que sea compatible con el Frontend actual
+        const resultadoFinal = productos.map(prod => {
+            // Transformar array de precios_sucursales a un objeto / array como espera el front
+            // El front actual lee "sucursales" construidas dinámicamente o "precios" { supId: { precio_actual, product_url } }
+            // Si miramos SearchClient.jsx:
+            // "if (current.precios)" o "if (current.supermercado)"
+            // El front reconstruye todo usando "barcode" o "name" como key
+            
+            const precios = {};
+            prod.precios_sucursales.forEach(sucursal => {
+                precios[sucursal.supermercado_id] = {
+                    precio_actual: sucursal.precio_actual,
+                    precio_lista: sucursal.precio_lista,
+                    product_url: sucursal.product_url
+                };
             });
-        }
 
-        // Asignamos el precio a la llave de su respectivo súper
-        let superId = p.supermarket.toLowerCase().replace('más', 'mas').replace(' ', '');
-        
-        // Si hay varios idénticos dentro del mismo súper, nos quedamos con el primero
-        const prod = productosAgrupados.get(key);
-        if (!prod.precios[superId]) {
-            prod.precios[superId] = {
-                precio_actual: p.precio_actual,
-                precio_lista: p.precio_lista,
-                product_url: p.product_url
+            // Para asegurar la retrocompatibilidad con SearchClient.jsx
+            // SearchClient usa current.barcode o current.name para agrupar.
+            return {
+                barcode: prod.ean,
+                name: prod.nombre_estandarizado,
+                brand: prod.marca,
+                weight: prod.contenido_neto,
+                unit: prod.unidad_medida,
+                // Podemos enviar la mejor imagen disponible de las sucursales
+                image_url: prod.precios_sucursales.find(s => s.url_imagen)?.url_imagen || null,
+                precios: precios
             };
-        }
-    });
+        });
 
-    // Convertir a Array para que el Front iteré más fácil
-    const resultadoFinal = Array.from(productosAgrupados.values());
+        return Response.json(resultadoFinal);
 
-    return Response.json(resultadoFinal);
+    } catch (error) {
+        console.error("Error buscando productos en BD:", error);
+        return Response.json({ error: "Internal Server Error" }, { status: 500 });
+    }
 }

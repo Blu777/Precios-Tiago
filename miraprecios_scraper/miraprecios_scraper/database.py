@@ -33,10 +33,19 @@ class SucursalPrecio(Base):
     )
 
 def get_engine():
-    # SQLite file should be in the shared data folder
-    # Assuming this runs from miraprecios_scraper or next.js root
-    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    db_path = os.path.join(base_dir, 'miraprecios_web', 'data', 'miraprecios.db')
+    # Allow override via environment variable
+    db_path = os.getenv('DB_PATH')
+    if not db_path:
+        # Check if we are running inside the Docker container
+        if os.path.exists('/app/data') or os.environ.get('DOCKER_CONTAINER'):
+            db_path = '/app/data/miraprecios.db'
+        else:
+            # Fallback to local development path
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            db_path = os.path.join(base_dir, 'miraprecios_web', 'data', 'miraprecios.db')
+            
+    # Ensure the directory exists before trying to open the SQLite file
+    os.makedirs(os.path.dirname(db_path), exist_ok=True)
     
     # Enable WAL mode for concurrency
     engine = create_engine(f'sqlite:///{db_path}', connect_args={'check_same_thread': False})

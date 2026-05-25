@@ -3,7 +3,7 @@
 # ----------------------------------------
 FROM node:18-alpine AS deps
 # libc6-compat asegura compatibilidad de ciertos binarios nativos (como process.dlopen) en Alpine Linux
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 # Copiamos los archivos de manifiesto de npm
@@ -16,6 +16,7 @@ RUN npm ci || npm install
 # Fase 2: Construcción (builder)
 # ----------------------------------------
 FROM node:18-alpine AS builder
+RUN apk add --no-cache openssl
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -38,6 +39,9 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
+
+# Instalar openssl requerido por el motor de Prisma
+RUN apk add --no-cache openssl
 
 # Seguridad: Crear grupo y usuario de sistema sin privilegios root
 RUN addgroup --system --gid 1001 nodejs

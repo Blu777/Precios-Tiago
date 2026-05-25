@@ -23,6 +23,9 @@ COPY . .
 # Desactivar la telemetría de Next.js por privacidad y velocidad
 ENV NEXT_TELEMETRY_DISABLED 1
 
+# Generar cliente de Prisma para SQLite
+RUN npx prisma generate
+
 # Compilar la aplicación. Al tener output: "standalone" configurado, 
 # se generará una versión auto-contenida ultraliviana.
 RUN npm run build

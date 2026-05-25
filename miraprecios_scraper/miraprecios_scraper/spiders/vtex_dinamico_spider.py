@@ -5,7 +5,6 @@ from datetime import datetime
 class VtexDinamicoSpider(scrapy.Spider):
     name = 'vtex_dinamico'
 
-    # 1. Diccionario de configuración por supermercado (Parametrización)
     TIENDAS = {
         'dia': {
             'domain': 'supermercadosdia.com.ar',
@@ -14,8 +13,18 @@ class VtexDinamicoSpider(scrapy.Spider):
         },
         'changomas': {
             'domain': 'masonline.com.ar',
-            'base_url': 'https://www.masonline.com.ar', # URL actual de ChangoMás (Más Online)
+            'base_url': 'https://www.masonline.com.ar',
             'name': 'ChangoMas'
+        },
+        'jumbo': {
+            'domain': 'jumbo.com.ar',
+            'base_url': 'https://www.jumbo.com.ar',
+            'name': 'Jumbo'
+        },
+        'vea': {
+            'domain': 'vea.com.ar',
+            'base_url': 'https://www.vea.com.ar',
+            'name': 'Vea'
         }
     }
 

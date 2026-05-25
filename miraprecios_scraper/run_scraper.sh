@@ -1,29 +1,30 @@
 #!/bin/bash
 set -e
 
-echo "[+] Iniciando extracción de datos VTEX con Scrapy..."
-FECHA=$(date +"%Y_%m_%d")
+echo "[+] Iniciando modo Demonio de extracción de datos VTEX con Scrapy..."
 
-# 1. Ejecutar extracción para Dia
-echo "[+] Raspando supermercados Dia..."
-scrapy crawl vtex_dinamico -a tienda=dia
-if [ -f "data/temp_results.json" ]; then
-    mv "data/temp_results.json" "data/precios_dia_${FECHA}.json"
-    echo "[✔] Dia completado exitosamente."
-else
-    echo "[!] Error guardando el archivo temporal de Dia."
-fi
+while true; do
+    FECHA=$(date +"%Y_%m_%d")
+    echo "[+] Empezando ciclo de scraping para el día ${FECHA}..."
 
-echo "---------------------------------------------------"
+    # Array de tiendas a iterar
+    TIENDAS=("dia" "changomas" "jumbo" "vea")
 
-# 2. Ejecutar extracción para ChangoMás
-echo "[+] Raspando supermercados ChangoMás..."
-scrapy crawl vtex_dinamico -a tienda=changomas
-if [ -f "data/temp_results.json" ]; then
-    mv "data/temp_results.json" "data/precios_changomas_${FECHA}.json"
-    echo "[✔] ChangoMás completado exitosamente."
-else
-    echo "[!] Error guardando el archivo temporal de ChangoMás."
-fi
+    for TIENDA in "${TIENDAS[@]}"; do
+        echo "---------------------------------------------------"
+        echo "[+] Raspando supermercados ${TIENDA}..."
+        scrapy crawl vtex_dinamico -a tienda=${TIENDA} || true
+        
+        if [ -f "data/temp_results.json" ]; then
+            mv "data/temp_results.json" "data/precios_${TIENDA}_${FECHA}.json"
+            echo "[✔] ${TIENDA} completado exitosamente."
+        else
+            echo "[!] Error guardando el archivo temporal de ${TIENDA}."
+        fi
+    done
 
-echo "[+] Tarea finalizada. Revisa la carpeta /data."
+    echo "---------------------------------------------------"
+    echo "[+] Ciclo diario finalizado. Revisa la carpeta /data."
+    echo "[zZz] Durmiendo por 24 horas..."
+    sleep 86400
+done

@@ -2,7 +2,7 @@ services:
   miraprecios:
     image: ghcr.io/blu777/precios-tiago/miraprecios-scraper:latest
     container_name: miraprecios_crawler
-    restart: "no" # No queremos que corra infinitamente, solo cuando se lo llama
+    restart: always # Correrá como demonio con el bucle while en bash
     volumes:
       # Mapeamos la ruta relativa ./data de TrueNAS hacia /app/data del contenedor
       - /mnt/tu_pool/datos/miraprecios/data:/app/data

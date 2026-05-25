@@ -1,6 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import ProductCard from '../components/ProductCard';
+
+const TEXTOS = {
+  subtitulo: 'Encontrá tu producto y compará.',
+  noEncontramos: 'No encontramos',
+  sugerencia: 'Asegurate de escribir bien la marca o intentá buscar algo más genérico.'
+};
 
 export default function Home() {
   const [query, setQuery] = useState('');
@@ -47,7 +54,7 @@ export default function Home() {
           🛒 MiraPrecios
         </h1>
         <p className="text-lg text-gray-500 mb-8">
-          Encontrá tu producto y compará.
+          {TEXTOS.subtitulo}
         </p>
         
         <div className="relative w-full max-w-2xl mx-auto">
@@ -66,83 +73,17 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <main className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
         {results.map((producto, idx) => (
-          <div key={idx} className="bg-white rounded-2xl shadow hover:shadow-xl transition-shadow overflow-hidden flex flex-col border border-gray-100">
-            {/* Header del Producto */}
-            <div className="p-6 flex-grow flex flex-col items-center">
-              {producto.image_url ? (
-                <img src={producto.image_url} alt={producto.name} className="h-40 object-contain mb-4 mix-blend-multiply" />
-              ) : (
-                <div className="h-40 w-full bg-gray-100 flex items-center justify-center mb-4 rounded-xl">
-                  <span className="text-gray-400 font-medium">Sin Imagen</span>
-                </div>
-              )}
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 text-center">
-                {producto.brand || 'Sin Marca'}
-              </span>
-              <h2 className="text-lg font-semibold text-center text-gray-800 line-clamp-2">
-                {producto.name}
-              </h2>
-            </div>
-            
-            {/* Cajas de Comparativa Lado a Lado */}
-            <div className="flex border-t border-gray-100 bg-gray-50">
-              
-              {/* Bloque Supermercado Dia */}
-              <div className="flex-1 p-5 border-r border-gray-200 flex flex-col justify-between items-center group hover:bg-red-50 transition-colors">
-                <span className="text-[10px] font-black text-red-600 mb-2 tracking-widest uppercase bg-red-100 px-2 py-1 rounded-sm">Dia</span>
-                {producto.precios.dia ? (
-                  <>
-                    <span className="text-2xl font-bold text-gray-900 mb-1">
-                      {formatearPrecio(producto.precios.dia.precio_actual)}
-                    </span>
-                    <a 
-                      href={producto.precios.dia.product_url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-xs text-red-500 hover:text-red-700 hover:underline font-medium"
-                    >
-                      Ver en tienda ↗
-                    </a>
-                  </>
-                ) : (
-                  <span className="text-sm text-gray-400 font-medium italic mt-2 opacity-60">No disponible</span>
-                )}
-              </div>
-
-              {/* Bloque ChangoMás */}
-              <div className="flex-1 p-5 flex flex-col justify-between items-center group hover:bg-yellow-50 transition-colors">
-                <span className="text-[10px] font-black text-yellow-600 mb-2 tracking-widest uppercase bg-yellow-100 px-2 py-1 rounded-sm">ChangoMás</span>
-                {producto.precios.changomas ? (
-                  <>
-                    <span className="text-2xl font-bold text-gray-900 mb-1">
-                      {formatearPrecio(producto.precios.changomas.precio_actual)}
-                    </span>
-                    <a 
-                      href={producto.precios.changomas.product_url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-xs text-yellow-600 hover:text-yellow-700 hover:underline font-medium"
-                    >
-                      Ver en tienda ↗
-                    </a>
-                  </>
-                ) : (
-                  <span className="text-sm text-gray-400 font-medium italic mt-2 opacity-60">No disponible</span>
-                )}
-              </div>
-
-            </div>
-          </div>
+          <ProductCard key={idx} producto={producto} />
         ))}
       </main>
 
       {/* Estado Vacío */}
       {query.length >= 3 && !loading && results.length === 0 && (
         <div className="text-center mt-12 bg-white max-w-lg mx-auto p-8 rounded-2xl shadow-sm border border-gray-100">
-          <p className="text-gray-600 text-lg font-medium mb-2">No encontramos "{query}".</p>
-          <p className="text-gray-400 text-sm">Asegurate de escribir bien la marca o intentá buscar algo más genérico.</p>
+          <p className="text-gray-600 text-lg font-medium mb-2">{TEXTOS.noEncontramos} "{query}".</p>
+          <p className="text-gray-400 text-sm">{TEXTOS.sugerencia}</p>
         </div>
       )}
     </div>

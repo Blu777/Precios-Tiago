@@ -88,7 +88,8 @@ class VtexDinamicoSpider(scrapy.Spider):
                     'path_subcategoria': path_subcategoria,
                     'from': _from,
                     'to': _to,
-                    'headers': response.meta['headers']
+                    'headers': response.meta['headers'],
+                    'order': None
                 }
             )
 
@@ -185,16 +186,51 @@ class VtexDinamicoSpider(scrapy.Spider):
         if len(data) == cantidad_solicitada:
             _from = response.meta['from']
             _to = response.meta['to']
+            order = response.meta.get('order')
+            path_subcategoria = response.meta['path_subcategoria']
+            
+            # Paso 4: Bypass Inteligente del Límite de 2500 ítems (Sub-split)
+            if _from == 0 and order is None:
+                # Extraemos el total de productos del header 'resources' (Ej: "0-49/3200")
+                resources = response.headers.get('resources', b'').decode('utf-8')
+                if resources and '/' in resources:
+                    try:
+                        total_items = int(resources.split('/')[1])
+                        if total_items > 2500:
+                            self.logger.info(f"⚡ Sub-split activado en {path_subcategoria} ({total_items} ítems exceden límite VTEX)")
+                            
+                            # Ramificamos en ASC y DESC para raspar hasta 5000 productos
+                            for new_order in ['OrderByPriceASC', 'OrderByPriceDESC']:
+                                next_url = f"{self.base_url}/api/catalog_system/pub/products/search{path_subcategoria}?_from=0&_to=49&O={new_order}"
+                                yield scrapy.Request(
+                                    url=next_url,
+                                    method='GET',
+                                    headers=response.meta['headers'],
+                                    callback=self.parse_products,
+                                    meta={
+                                        'path_subcategoria': path_subcategoria,
+                                        'from': 0,
+                                        'to': 49,
+                                        'headers': response.meta['headers'],
+                                        'order': new_order
+                                    },
+                                    dont_filter=True
+                                )
+                            # Cortamos la rama normal (None) para redirigir el flujo a las sub-ramas ordenadas
+                            return
+                    except Exception as e:
+                        self.logger.warning(f"No se pudo extraer total de ítems del header resources: {e}")
             
             next_from = _to + 1
             next_to = next_from + 49
             
             if next_to >= 2500:
-                self.logger.warning(f"Límite de VTEX alcanzado en {response.meta['path_subcategoria']}")
+                self.logger.info(f"Límite de 2500 alcanzado en la rama order={order} para {path_subcategoria}")
                 return
                 
-            path_subcategoria = response.meta['path_subcategoria']
             next_url = f"{self.base_url}/api/catalog_system/pub/products/search{path_subcategoria}?_from={next_from}&_to={next_to}"
+            if order:
+                next_url += f"&O={order}"
             
             yield scrapy.Request(
                 url=next_url,
@@ -205,6 +241,7 @@ class VtexDinamicoSpider(scrapy.Spider):
                     'path_subcategoria': path_subcategoria,
                     'from': next_from,
                     'to': next_to,
-                    'headers': response.meta['headers']
+                    'headers': response.meta['headers'],
+                    'order': order
                 }
             )

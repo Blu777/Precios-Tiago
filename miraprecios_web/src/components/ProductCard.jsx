@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import Image from 'next/image';
 import { useCart } from '../context/CartContext';
 
 const SUPERMERCADOS = {
@@ -53,10 +54,12 @@ export default function ProductCard({ producto }) {
       {/* Imagen */}
       <div className="w-24 h-24 sm:w-full sm:h-48 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center relative p-2">
         {producto.image_url ? (
-          <img 
+          <Image 
             src={producto.image_url} 
-            alt={producto.name} 
-            className="object-contain w-full h-full group-hover:scale-105 transition-transform mix-blend-multiply"
+            alt={producto.name || "Producto"} 
+            fill
+            sizes="(max-width: 640px) 96px, 100vw"
+            className="object-contain group-hover:scale-105 transition-transform mix-blend-multiply p-2"
           />
         ) : (
           <span className="text-gray-400 font-medium text-xs">Sin Imagen</span>

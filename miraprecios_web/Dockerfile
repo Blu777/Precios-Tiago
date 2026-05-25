@@ -23,6 +23,7 @@ COPY . .
 
 # Desactivar la telemetría de Next.js por privacidad y velocidad
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV DATABASE_URL "file:/app/data/miraprecios.db"
 
 # Generar cliente de Prisma para SQLite
 RUN npx prisma generate
@@ -39,6 +40,7 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV DATABASE_URL "file:/app/data/miraprecios.db"
 
 # Instalar openssl requerido por el motor de Prisma
 RUN apk add --no-cache openssl

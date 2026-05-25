@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:../data/miraprecios.db"
+  url      = env("DATABASE_URL")
 }
 
 model ProductoMaestro {

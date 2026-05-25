@@ -43,14 +43,16 @@ export async function GET(request) {
             // "if (current.precios)" o "if (current.supermercado)"
             // El front reconstruye todo usando "barcode" o "name" como key
             
-            const precios = {};
-            prod.precios_sucursales.forEach(sucursal => {
-                precios[sucursal.supermercado_id] = {
-                    precio_actual: sucursal.precio_actual,
-                    precio_lista: sucursal.precio_lista,
-                    product_url: sucursal.product_url
-                };
-            });
+            const precios = Object.fromEntries(
+                prod.precios_sucursales.map(sucursal => [
+                    sucursal.supermercado_id,
+                    {
+                        precio_actual: sucursal.precio_actual,
+                        precio_lista: sucursal.precio_lista,
+                        product_url: sucursal.product_url
+                    }
+                ])
+            );
 
             // Para asegurar la retrocompatibilidad con SearchClient.jsx
             // SearchClient usa current.barcode o current.name para agrupar.

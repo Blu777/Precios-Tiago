@@ -1,5 +1,8 @@
 services:
   frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: ghcr.io/blu777/precios-tiago/miraprecios-web:latest
     container_name: miraprecios_web
     restart: always

@@ -54,8 +54,9 @@ class MiraPreciosRetryMiddleware(RetryMiddleware):
             retryreq.dont_filter = True
             
             # Limpiar el proxy actual de la meta para obligar al RotatingProxyMiddleware a asignar una IP nueva
-            if 'proxy' in retryreq.meta:
-                del retryreq.meta['proxy']
+            # (Comentado temporalmente para fase de desarrollo local sin proxy)
+            # if 'proxy' in retryreq.meta:
+            #     del retryreq.meta['proxy']
             
             # IMPORTANTE: En lugar de usar time.sleep() que bloquearía todo el scraper (reactor de Twisted),
             # usamos deferLater para pausar solo esta petición asíncronamente y devolver el Request luego del delay.

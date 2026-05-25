@@ -32,8 +32,8 @@ DOWNLOADER_MIDDLEWARES = {
     'miraprecios_scraper.middlewares.MiraPreciosRetryMiddleware': 500,
 
     # 3. Rotación de Proxies (Requiere scrapy-rotating-proxies)
-    'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
-    'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
+    # 'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
+    # 'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
     
     # 4. Bypass de proxy para peticiones críticas iniciales
     'miraprecios_scraper.middlewares.BypassProxyMiddleware': 650,
@@ -53,9 +53,9 @@ RETRY_HTTP_CODES = [403, 429, 500, 502, 503, 504]
 ROTATING_PROXY_LIST = [
     # 'ip:puerto',
     # 'usuario:password@ip:puerto',
-    'proxy1.ejemplo.com:8000',
-    'proxy2.ejemplo.com:8031',
-    'john_doe:secretpass@192.168.1.100:3128',
+    # 'proxy1.ejemplo.com:8000',
+    # 'proxy2.ejemplo.com:8031',
+    # 'john_doe:secretpass@192.168.1.100:3128',
 ]
 
 # (Opcional) Si la lista de proxies es inmensa y prefieres leerla desde un archivo

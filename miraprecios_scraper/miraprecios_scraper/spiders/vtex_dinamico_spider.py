@@ -49,7 +49,11 @@ class VtexDinamicoSpider(scrapy.Spider):
         
         headers = {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Referer': self.base_url + '/',
+            'Origin': self.base_url,
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept-Language': 'es-AR,es;q=0.9,en-US;q=0.8,en;q=0.7'
         }
         
         req = scrapy.Request(
@@ -57,7 +61,11 @@ class VtexDinamicoSpider(scrapy.Spider):
             method='GET',
             headers=headers,
             callback=self.parse_category_tree,
-            meta={'headers': headers},
+            meta={
+                'headers': headers,
+                'dont_proxy': True,
+                'download_timeout': 10
+            },
             dont_filter=True
         )
         self.logger.info(f"Generado Request inicial: {req.url}")

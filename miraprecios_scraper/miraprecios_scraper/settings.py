@@ -34,6 +34,9 @@ DOWNLOADER_MIDDLEWARES = {
     # 3. Rotación de Proxies (Requiere scrapy-rotating-proxies)
     'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
     'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
+    
+    # 4. Bypass de proxy para peticiones críticas iniciales
+    'miraprecios_scraper.middlewares.BypassProxyMiddleware': 650,
 }
 
 # Configuración del Custom Retry
@@ -78,5 +81,5 @@ FEEDS = {
 
 # Configuraciones por defecto modernas
 REQUEST_FINGERPRINTER_IMPLEMENTATION = '2.7'
-# TWISTED_REACTOR = 'twisted.internet.asyncioreactor.AsyncioSelectorReactor'
+TWISTED_REACTOR = 'twisted.internet.asyncioreactor.AsyncioSelectorReactor'
 FEED_EXPORT_ENCODING = 'utf-8'

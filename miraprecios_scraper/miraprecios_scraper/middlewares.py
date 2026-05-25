@@ -1,7 +1,6 @@
 import logging
 from scrapy.downloadermiddlewares.retry import RetryMiddleware
 from scrapy.utils.response import response_status_message
-from twisted.internet import reactor
 from twisted.internet.task import deferLater
 
 logger = logging.getLogger(__name__)
@@ -17,6 +16,11 @@ class MiraPreciosRetryMiddleware(RetryMiddleware):
         self.retry_http_codes = set(int(x) for x in settings.getlist('RETRY_HTTP_CODES'))
         # Factor base de espera en segundos para el backoff
         self.base_delay = 2 
+
+    def process_request(self, request, spider):
+        if hasattr(super(MiraPreciosRetryMiddleware, self), 'process_request'):
+            return super(MiraPreciosRetryMiddleware, self).process_request(request, spider)
+        return None
 
     def process_response(self, request, response, spider):
         if request.meta.get('dont_retry', False):
@@ -55,7 +59,18 @@ class MiraPreciosRetryMiddleware(RetryMiddleware):
             
             # IMPORTANTE: En lugar de usar time.sleep() que bloquearía todo el scraper (reactor de Twisted),
             # usamos deferLater para pausar solo esta petición asíncronamente y devolver el Request luego del delay.
+            from twisted.internet import reactor
             return deferLater(reactor, delay, lambda: retryreq)
         else:
             logger.error(f"[GIVE UP] Máximo de reintentos ({self.max_retry_times}) superado para {request.url}")
             return None
+
+class BypassProxyMiddleware:
+    """
+    Middleware para ignorar el proxy si el request tiene dont_proxy=True en su meta.
+    Debe ejecutarse DESPUÉS de RotatingProxyMiddleware pero ANTES que HttpProxyMiddleware.
+    """
+    def process_request(self, request, spider):
+        if request.meta.get('dont_proxy', False):
+            # Limpiamos el proxy asignado por middlewares anteriores
+            request.meta['proxy'] = None

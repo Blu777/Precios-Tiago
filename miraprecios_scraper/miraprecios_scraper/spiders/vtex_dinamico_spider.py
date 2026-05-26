@@ -9,23 +9,33 @@ class VtexDinamicoSpider(scrapy.Spider):
         'dia': {
             'domain': 'supermercadosdia.com.ar',
             'base_url': 'https://diaonline.supermercadosdia.com.ar',
-            'name': 'Dia'
+            'name': 'dia'
         },
         'changomas': {
             'domain': 'masonline.com.ar',
             'base_url': 'https://www.masonline.com.ar',
-            'name': 'ChangoMas'
+            'name': 'changomas'
         },
         'jumbo': {
             'domain': 'jumbo.com.ar',
             'base_url': 'https://www.jumbo.com.ar',
-            'name': 'Jumbo'
+            'name': 'jumbo'
         },
         'vea': {
             'domain': 'vea.com.ar',
             'base_url': 'https://www.vea.com.ar',
-            'name': 'Vea'
-        }
+            'name': 'vea'
+        },
+        'disco': {
+            'domain': 'disco.com.ar',
+            'base_url': 'https://www.disco.com.ar',
+            'name': 'disco'
+        },
+        'carrefour': {
+            'domain': 'carrefour.com.ar',
+            'base_url': 'https://www.carrefour.com.ar',
+            'name': 'carrefour'
+        },
     }
 
     CATEGORIAS_EXCLUIDAS = [

@@ -11,11 +11,28 @@ from miraprecios_scraper.database import get_session, ProductoMaestro, SucursalP
 from miraprecios_scraper.pipelines import DataNormalizationPipeline
 
 TARGET_BANDERAS = {
-    'dia': 'dia',
+    # Grupo Cencosud
+    'jumbo': 'jumbo',
+    'disco': 'disco',
+    'vea': 'vea',
+    # ChangoMás (GDN)
     'chango mas': 'changomas',
     'changomas': 'changomas',
-    'jumbo': 'jumbo',
-    'vea': 'vea'
+    'hiperchangomas': 'changomas',
+    'superchangomas': 'changomas',
+    # Supermercados Día
+    'dia': 'dia',
+    # Carrefour Argentina
+    'hipermercado carrefour': 'carrefour',
+    'carrefour market': 'carrefour',
+    'carrefour express': 'carrefour_express',
+    'carrefour maxi': 'carrefour_maxi',
+    'mini carrefour': 'carrefour',
+    # Coto CICSA
+    'coto': 'coto',
+    # La Anónima
+    'la anonima': 'la_anonima',
+    'anonima': 'la_anonima',
 }
 
 def get_internal_supermarket_id(bandera_nombre):
@@ -102,6 +119,11 @@ def process_sepa_daily_dir(base_dir):
     # Consolidar todos los productos
     df_all = pd.concat(all_products, ignore_index=True)
     
+    # Fix EAN column directly in pandas
+    df_all['productos_ean'] = df_all['productos_ean'].astype(str).str.strip()
+    mask = df_all['productos_ean'].isin(['0', '0.0', 'nan', ''])
+    df_all.loc[mask, 'productos_ean'] = df_all.loc[mask, 'id_producto'].astype(str).str.strip()
+    
     # Quedarnos con el primer precio que encontremos por EAN y supermercado
     # (simplificación ya que puede haber muchas sucursales)
     df_all = df_all.drop_duplicates(subset=['productos_ean', 'internal_id'])
@@ -152,45 +174,59 @@ def process_sepa_daily_dir(base_dir):
             'product_url': None
         })
 
-    # Upsert Maestro
+    # Upsert Maestro en chunks
     if records_maestro:
         # Deduplicar maestro por ean
         maestro_df = pd.DataFrame(records_maestro).drop_duplicates(subset=['ean'])
         maestro_dicts = maestro_df.to_dict('records')
         
-        stmt_m = insert(ProductoMaestro).values(maestro_dicts)
-        on_conflict_m = stmt_m.on_conflict_do_update(
-            index_elements=['ean'],
-            set_={
-                'nombre_estandarizado': stmt_m.excluded.nombre_estandarizado,
-                'marca': stmt_m.excluded.marca
-            }
-        )
-        try:
-            session.execute(on_conflict_m)
-            session.commit()
-            print(f"[+] Upsert exitoso de {len(maestro_dicts)} registros en ProductoMaestro.")
-        except Exception as e:
-            session.rollback()
-            print(f"[-] Error en ProductoMaestro: {e}")
+        chunk_size = 1000
+        exitos = 0
+        for i in range(0, len(maestro_dicts), chunk_size):
+            chunk = maestro_dicts[i:i+chunk_size]
+            stmt_m = insert(ProductoMaestro).values(chunk)
+            on_conflict_m = stmt_m.on_conflict_do_update(
+                index_elements=['ean'],
+                set_={
+                    'nombre_estandarizado': stmt_m.excluded.nombre_estandarizado,
+                    'marca': stmt_m.excluded.marca
+                }
+            )
+            try:
+                session.execute(on_conflict_m)
+                session.commit()
+                exitos += len(chunk)
+            except Exception as e:
+                session.rollback()
+                print(f"[-] Error en ProductoMaestro chunk {i}: {e}")
+        print(f"[+] Upsert exitoso de {exitos} registros en ProductoMaestro.")
 
-    # Upsert SucursalPrecio
+    # Upsert Precio en chunks
     if records_precio:
-        stmt_p = insert(SucursalPrecio).values(records_precio)
-        on_conflict_p = stmt_p.on_conflict_do_update(
-            index_elements=['producto_ean', 'supermercado_id'],
-            set_={
-                'precio_actual': stmt_p.excluded.precio_actual,
-                'precio_lista': stmt_p.excluded.precio_lista
-            }
-        )
-        try:
-            session.execute(on_conflict_p)
-            session.commit()
-            print(f"[+] Upsert exitoso de {len(records_precio)} registros en SucursalPrecio.")
-        except Exception as e:
-            session.rollback()
-            print(f"[-] Error en SucursalPrecio: {e}")
+        # Deduplicar precio por ean y supermercado (por si acaso)
+        precio_df = pd.DataFrame(records_precio).drop_duplicates(subset=['producto_ean', 'supermercado_id'])
+        precio_dicts = precio_df.to_dict('records')
+        
+        chunk_size = 1000
+        exitos = 0
+        for i in range(0, len(precio_dicts), chunk_size):
+            chunk = precio_dicts[i:i+chunk_size]
+            stmt_p = insert(SucursalPrecio).values(chunk)
+            on_conflict_p = stmt_p.on_conflict_do_update(
+                index_elements=['producto_ean', 'supermercado_id'],
+                set_={
+                    'precio_actual': stmt_p.excluded.precio_actual,
+                    'precio_lista': stmt_p.excluded.precio_lista
+                }
+            )
+            try:
+                session.execute(on_conflict_p)
+                session.commit()
+                exitos += len(chunk)
+            except Exception as e:
+                session.rollback()
+                print(f"[-] Error en SucursalPrecio chunk {i}: {e}")
+        print(f"[+] Upsert exitoso de {exitos} registros en SucursalPrecio.")
 
     session.close()
 

@@ -15,8 +15,8 @@ while true; do
     echo "---------------------------------------------------"
     echo "[+] Paso 2/2: Trabajo fino de recolección de URLs e Imágenes en VTEX..."
 
-    # Array de tiendas a iterar
-    TIENDAS=("dia" "changomas" "jumbo" "vea")
+    # Array de tiendas a iterar (ecosistema VTEX)
+    TIENDAS=("dia" "changomas" "jumbo" "vea" "disco" "carrefour")
 
     for TIENDA in "${TIENDAS[@]}"; do
         echo "---------------------------------------------------"

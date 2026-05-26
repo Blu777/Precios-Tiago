@@ -4,12 +4,22 @@ import Image from 'next/image';
 import { useCart } from '../context/CartContext';
 
 const SUPERMERCADOS = new Map([
-  ['dia', { nombre: 'Dia', logo: 'https://cdn.icon-icons.com/icons2/2699/PNG/512/dia_supermercado_logo_icon_170701.png', colorText: 'text-red-600', bg: 'bg-red-50' }],
-  ['changomas', { nombre: 'ChangoMás', logo: 'https://changomas.com.ar/favicon.ico', colorText: 'text-yellow-600', bg: 'bg-yellow-50' }],
+  // Grupo Cencosud
   ['jumbo', { nombre: 'Jumbo', logo: 'https://jumbo.vtexassets.com/assets/vtex.file-manager-graphql/images/a570cbf0-eab9-42b4-8ab3-772c68e0d42d___54d898c69818b2b7ea00840c885bbd1f.png', colorText: 'text-green-700', bg: 'bg-green-50' }],
+  ['disco', { nombre: 'Disco', logo: 'https://discovirtual.com.ar/favicon.ico', colorText: 'text-purple-700', bg: 'bg-purple-50' }],
   ['vea', { nombre: 'Vea', logo: 'https://veaargentina.vtexassets.com/assets/vtex.file-manager-graphql/images/ebec6476-cda1-4a92-9a57-b0b30be347cd___9dfde8be91a13e2dfb9ff23db12ba11a.png', colorText: 'text-blue-600', bg: 'bg-blue-50' }],
-  ['coto', { nombre: 'Coto', logo: 'https://www.coto.com.ar/favicon.ico', colorText: 'text-blue-800', bg: 'bg-blue-100' }],
-  ['carrefour', { nombre: 'Carrefour', logo: 'https://www.carrefour.com.ar/favicon.ico', colorText: 'text-blue-500', bg: 'bg-blue-50' }]
+  // ChangoMás
+  ['changomas', { nombre: 'ChangoMás', logo: 'https://changomas.com.ar/favicon.ico', colorText: 'text-yellow-600', bg: 'bg-yellow-50' }],
+  // Supermercados Día
+  ['dia', { nombre: 'Día', logo: 'https://cdn.icon-icons.com/icons2/2699/PNG/512/dia_supermercado_logo_icon_170701.png', colorText: 'text-red-600', bg: 'bg-red-50' }],
+  // Carrefour (todos los formatos)
+  ['carrefour', { nombre: 'Carrefour', logo: 'https://www.carrefour.com.ar/favicon.ico', colorText: 'text-blue-500', bg: 'bg-blue-50' }],
+  ['carrefour_express', { nombre: 'Carrefour Express', logo: 'https://www.carrefour.com.ar/favicon.ico', colorText: 'text-sky-600', bg: 'bg-sky-50' }],
+  ['carrefour_maxi', { nombre: 'Carrefour Maxi', logo: 'https://www.carrefour.com.ar/favicon.ico', colorText: 'text-indigo-700', bg: 'bg-indigo-50' }],
+  // Coto
+  ['coto', { nombre: 'Coto', logo: 'https://www.coto.com.ar/favicon.ico', colorText: 'text-orange-700', bg: 'bg-orange-50' }],
+  // La Anónima
+  ['la_anonima', { nombre: 'La Anónima', logo: 'https://www.laanonima.com.ar/favicon.ico', colorText: 'text-teal-700', bg: 'bg-teal-50' }],
 ]);
 
 const TEXTOS = {

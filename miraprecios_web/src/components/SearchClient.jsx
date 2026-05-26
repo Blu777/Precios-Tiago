@@ -8,6 +8,16 @@ const TEXTOS = {
   sugerencia: 'Asegurate de escribir bien la marca o intentá buscar algo más genérico.'
 };
 
+const SkeletonCard = () => (
+  <div className="animate-pulse bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col gap-3">
+    <div className="w-full h-36 bg-gray-200 rounded-lg" />
+    <div className="h-3 bg-gray-200 rounded w-1/3" />
+    <div className="h-4 bg-gray-300 rounded w-3/4" />
+    <div className="h-4 bg-gray-300 rounded w-1/2" />
+    <div className="h-8 bg-gray-200 rounded-lg mt-2" />
+  </div>
+);
+
 export default function SearchClient() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -20,14 +30,18 @@ export default function SearchClient() {
       return;
     }
 
+    const controller = new AbortController();
+
     const delayDebounceFn = setTimeout(() => {
       setLoading(true);
-      fetch(`/api/buscar?q=${encodeURIComponent(query)}`)
+      fetch(`/api/buscar?q=${encodeURIComponent(query.toUpperCase())}`, {
+        signal: controller.signal
+      })
         .then(res => res.json())
         .then(data => {
           // Agrupación y compactación de productos repetidos usando Map para mayor seguridad
           const agrupados = data.reduce((acc, current) => {
-            const key = current.barcode || current.name;
+            const key = current.name; // Agrupar estrictamente por nombre para evitar duplicados visuales
             
             if (!acc.has(key)) {
               acc.set(key, {
@@ -87,12 +101,16 @@ export default function SearchClient() {
           setLoading(false);
         })
         .catch(err => {
+          if (err.name === 'AbortError') return;
           console.error("Error fetching data:", err);
           setLoading(false);
         });
     }, 300); // 300ms de gracia
 
-    return () => clearTimeout(delayDebounceFn);
+    return () => {
+      clearTimeout(delayDebounceFn);
+      controller.abort();
+    };
   }, [query]);
 
   return (
@@ -115,10 +133,13 @@ export default function SearchClient() {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-        {results.map((producto, idx) => (
-          <ProductCard key={idx} producto={producto} />
-        ))}
+      <main className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-3 md:gap-4">
+        {loading 
+          ? Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)
+          : results.map((producto) => (
+              <ProductCard key={producto.barcode || producto.name} producto={producto} />
+            ))
+        }
       </main>
 
       {/* Estado Vacío */}

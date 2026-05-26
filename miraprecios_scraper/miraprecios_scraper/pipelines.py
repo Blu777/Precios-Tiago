@@ -63,13 +63,18 @@ class SQLitePipeline:
     Pipeline que guarda los items normalizados en la base de datos SQLite.
     Genera un EAN sintético si no existe, y realiza upserts en ProductoMaestro y SucursalPrecio.
     """
+    BATCH_SIZE = 50
+
     def __init__(self):
         self.session = None
+        self._pending_maestro = []
+        self._pending_precio = []
 
     def open_spider(self, spider):
         self.session = get_session()
 
     def close_spider(self, spider):
+        self._flush(spider)
         if self.session:
             self.session.close()
 
@@ -124,6 +129,7 @@ class SQLitePipeline:
             precio_lista=item.get('precio_lista', precio_actual),
             url_imagen=item.get('image_url'),
             product_url=item.get('product_url'),
+            disponible_online=item.get('disponible_online', True)
         )
         
         # UniqueConstraint: [producto_ean, supermercado_id]
@@ -134,16 +140,33 @@ class SQLitePipeline:
                 'precio_lista': stmt_precio.excluded.precio_lista,
                 'url_imagen': stmt_precio.excluded.url_imagen,
                 'product_url': stmt_precio.excluded.product_url,
+                'disponible_online': stmt_precio.excluded.disponible_online,
                 'ultima_actualizacion': stmt_precio.excluded.ultima_actualizacion
             }
         )
 
+        self._pending_maestro.append(on_conflict_maestro)
+        self._pending_precio.append(on_conflict_precio)
+
+        if len(self._pending_precio) >= self.BATCH_SIZE:
+            self._flush(spider)
+
+        return item
+
+    def _flush(self, spider=None):
+        if not self._pending_maestro and not self._pending_precio:
+            return
+            
         try:
-            self.session.execute(on_conflict_maestro)
-            self.session.execute(on_conflict_precio)
+            for stmt in self._pending_maestro:
+                self.session.execute(stmt)
+            for stmt in self._pending_precio:
+                self.session.execute(stmt)
             self.session.commit()
         except Exception as e:
             self.session.rollback()
-            spider.logger.error(f"Error insertando {ean} en DB: {e}")
-
-        return item
+            if spider:
+                spider.logger.error(f"Error insertando batch en DB: {e}")
+        finally:
+            self._pending_maestro.clear()
+            self._pending_precio.clear()

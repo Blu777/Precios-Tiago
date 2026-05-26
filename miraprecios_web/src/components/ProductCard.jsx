@@ -45,6 +45,7 @@ const formatearPrecio = (precio) => {
 
 export default function ProductCard({ producto }) {
   const [showAllPrices, setShowAllPrices] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const { cart, addToCart, removeFromCart } = useCart();
   
   const inCart = cart.some(p => p.name === producto.name);
@@ -59,17 +60,18 @@ export default function ProductCard({ producto }) {
   const cheapestSup = cheapestBranch ? (SUPERMERCADOS.get(cheapestBranch.id) || { nombre: cheapestBranch.id }) : null;
 
   return (
-    <div className="group relative flex flex-row sm:flex-col bg-white rounded-2xl sm:rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all p-3 sm:p-4 gap-4 w-full">
+    <div className="group relative flex flex-row sm:flex-col bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all p-2 sm:p-3 gap-2 sm:gap-3 w-full">
       
       {/* Imagen */}
-      <div className="w-24 h-24 sm:w-full sm:h-48 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center relative p-2">
-        {producto.image_url ? (
+      <div className="w-20 h-20 sm:w-full sm:h-36 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center relative p-1 sm:p-2">
+        {producto.image_url && !imageError ? (
           <Image 
             src={producto.image_url} 
             alt={producto.name || "Producto"} 
             fill
             sizes="(max-width: 640px) 96px, 100vw"
             className="object-contain group-hover:scale-105 transition-transform mix-blend-multiply p-2"
+            onError={() => setImageError(true)}
           />
         ) : (
           <span className="text-gray-400 font-medium text-xs">{TEXTOS.sinImagen}</span>
@@ -82,7 +84,7 @@ export default function ProductCard({ producto }) {
         {/* Cabecera */}
         <div>
           <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{producto.brand || TEXTOS.variasMarcas}</span>
-          <h3 className="text-sm sm:text-base font-semibold text-gray-900 leading-tight mt-0.5 line-clamp-2" title={producto.name}>
+          <h3 className="text-xs sm:text-sm font-semibold text-gray-900 leading-tight mt-0.5 line-clamp-2" title={producto.name}>
             {producto.name}
           </h3>
         </div>
@@ -90,7 +92,7 @@ export default function ProductCard({ producto }) {
         {/* Precio y Comparativa */}
         <div className="mt-2 sm:mt-4">
           <div className="flex items-end gap-2">
-            <span className="text-2xl font-extrabold text-emerald-600 tracking-tight">
+            <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 tracking-tight">
               {lowestPrice !== null ? formatearPrecio(lowestPrice) : TEXTOS.na}
             </span>
           </div>
@@ -119,8 +121,8 @@ export default function ProductCard({ producto }) {
               
               {/* Desplegable de sucursales con animación CSS sutil */}
               <div 
-                className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                  showAllPrices ? 'max-h-64 opacity-100 mt-2' : 'max-h-0 opacity-0'
+                className={`transition-all duration-300 ease-in-out ${
+                  showAllPrices ? 'max-h-[400px] overflow-y-auto opacity-100 mt-2' : 'max-h-0 overflow-hidden opacity-0'
                 }`}
               >
                 <div className="space-y-1.5 flex flex-col">

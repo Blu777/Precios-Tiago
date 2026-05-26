@@ -14,6 +14,7 @@ class ProductoMaestro(Base):
     contenido_neto = Column(Float, nullable=True)
     unidad_medida = Column(String, nullable=True)
     categoria_id = Column(String, nullable=True)
+    url_imagen = Column(String, nullable=True)
 
 class SucursalPrecio(Base):
     __tablename__ = 'SucursalPrecio'
@@ -54,6 +55,7 @@ def get_engine():
     with engine.connect() as conn:
         conn.execute(text("PRAGMA journal_mode=WAL"))
         conn.execute(text("PRAGMA synchronous=NORMAL"))
+        conn.execute(text("PRAGMA busy_timeout=5000"))
         
     Base.metadata.create_all(engine)
     return engine

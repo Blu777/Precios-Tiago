@@ -119,14 +119,36 @@ def process_sepa_daily_dir(base_dir):
     # Consolidar todos los productos
     df_all = pd.concat(all_products, ignore_index=True)
     
-    # Fix EAN column directly in pandas
+    # Normalizar EAN en 3 pasos:
+    # 1. Usar productos_ean si es válido
+    # 2. Usar id_producto si es válido  
+    # 3. Generar EAN sintético a partir de descripcion+marca (para productos sin código)
     df_all['productos_ean'] = df_all['productos_ean'].astype(str).str.strip()
-    mask = df_all['productos_ean'].isin(['0', '0.0', 'nan', ''])
-    df_all.loc[mask, 'productos_ean'] = df_all.loc[mask, 'id_producto'].astype(str).str.strip()
+    df_all['id_producto'] = df_all['id_producto'].astype(str).str.strip()
     
-    # Quedarnos con el primer precio que encontremos por EAN y supermercado
-    # (simplificación ya que puede haber muchas sucursales)
+    INVALID_EAN = {'0', '0.0', '1', '1.0', 'nan', ''}
+    
+    # Paso 1: reemplazar EAN inválido con id_producto
+    mask_ean_zero = df_all['productos_ean'].isin(INVALID_EAN)
+    df_all.loc[mask_ean_zero, 'productos_ean'] = df_all.loc[mask_ean_zero, 'id_producto']
+    
+    # Paso 2: si id_producto también es inválido, generar EAN sintético por descripcion+marca
+    import hashlib
+    mask_still_zero = df_all['productos_ean'].isin(INVALID_EAN)
+    desc = df_all.loc[mask_still_zero, 'productos_descripcion'].fillna('').str.upper().str.strip()
+    marca = df_all.loc[mask_still_zero, 'productos_marca'].fillna('').str.upper().str.strip()
+    contenido = df_all.loc[mask_still_zero, 'productos_cantidad_presentacion'].fillna('').astype(str)
+    base = desc + '|' + marca + '|' + contenido
+    df_all.loc[mask_still_zero, 'productos_ean'] = 'SYN-' + base.apply(
+        lambda s: hashlib.md5(s.encode('utf-8')).hexdigest()[:12].upper()
+    )
+    
+    # Eliminar los que aún sean inválidos (sin descripción)
+    df_all = df_all[~df_all['productos_ean'].isin(['0', '0.0', 'nan', '', 'SYN-000000000000'])]
+    
+    # Deduplicar: un precio por EAN por cadena (el primero que aparezca)
     df_all = df_all.drop_duplicates(subset=['productos_ean', 'internal_id'])
+    print(f"[*] Productos únicos tras deduplicación: {len(df_all)} ({df_all.groupby('internal_id').size().to_dict()})")
     
     records_maestro = []
     records_precio = []

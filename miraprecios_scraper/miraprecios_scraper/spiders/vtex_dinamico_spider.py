@@ -177,6 +177,24 @@ class VtexDinamicoSpider(scrapy.Spider):
 
             first_sku = skus[0]
             sku_id = first_sku.get('itemId')
+
+            # --- FIX 1.A: Extraer EAN/GTIN real desde referenceId ---
+            # La API VTEX expone: [{"Key": "RefId", "Value": "7790580002541"}]
+            barcode = None
+            reference_ids = first_sku.get('referenceId', [])
+            for ref in reference_ids:
+                if ref.get('Key') in ('RefId', 'EAN', 'GTIN', 'Barcode', 'ean', 'gtin'):
+                    val = str(ref.get('Value', '')).strip()
+                    if val and val not in ('0', '', 'None'):
+                        barcode = val
+                        break
+            # Fallback: intentar desde el campo EAN directo del SKU si existe
+            if not barcode:
+                ean_field = first_sku.get('ean') or first_sku.get('EAN') or first_sku.get('gtin')
+                if ean_field:
+                    val = str(ean_field).strip()
+                    if val and val not in ('0', '', 'None'):
+                        barcode = val
             
             url_imagen = None
             images = first_sku.get('images', [])
@@ -220,6 +238,7 @@ class VtexDinamicoSpider(scrapy.Spider):
 
             yield {
                 'sku': sku_id,
+                'barcode': barcode,   # FIX 1.A: EAN real (o None si no lo expone la tienda)
                 'name': nombre,
                 'brand': marca,
                 'precio_actual': float(precio_actual) if precio_actual is not None else None,

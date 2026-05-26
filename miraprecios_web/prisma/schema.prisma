@@ -17,8 +17,12 @@ model ProductoMaestro {
   contenido_neto       Float?
   unidad_medida        String?
   categoria_id         String?
+  url_imagen           String?
   
   precios_sucursales   SucursalPrecio[]
+
+  @@index([nombre_estandarizado])
+  @@index([marca])
 }
 
 model SucursalPrecio {
@@ -35,4 +39,6 @@ model SucursalPrecio {
   producto             ProductoMaestro @relation(fields: [producto_ean], references: [ean], onDelete: Cascade)
 
   @@unique([producto_ean, supermercado_id])
+  @@index([producto_ean])
+  @@index([disponible_online])
 }

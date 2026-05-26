@@ -40,7 +40,7 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
-ENV DATABASE_URL "file:/app/data/miraprecios.db"
+ENV DATABASE_URL "file:///app/data/miraprecios.db"
 
 # Instalar openssl requerido por el motor de Prisma
 RUN apk add --no-cache openssl

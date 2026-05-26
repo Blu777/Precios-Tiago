@@ -14,5 +14,5 @@ services:
       - /mnt/tu_pool/datos/miraprecios/data:/app/data
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=file:/app/data/miraprecios.db
+      - DATABASE_URL=file:///app/data/miraprecios.db
       # - TZ=America/Argentina/Buenos_Aires # Útil si manejas timestamps locales en la UI

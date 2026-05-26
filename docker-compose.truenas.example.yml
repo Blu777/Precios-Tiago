@@ -20,7 +20,7 @@ services:
       # Permite que la app responda hacia afuera del contenedor
       - HOSTNAME=0.0.0.0 
       - TZ=America/Argentina/Buenos_Aires
-      - DATABASE_URL=file:/app/data/miraprecios.db
+      - DATABASE_URL=file:///app/data/miraprecios.db
 
   # ----------------------------------------
   # 2. El Scraper de Precios (Python)

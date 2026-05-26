@@ -34,9 +34,14 @@ def clean_name(name):
     return ' '.join(capitalized_words)
 
 def main():
-    # Detect db path
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    db_path = os.path.join(base_dir, 'miraprecios_web', 'data', 'miraprecios.db')
+    # Detect db path (compatible with Docker)
+    db_path = os.getenv('DB_PATH')
+    if not db_path:
+        if os.path.exists('/app/data') or os.environ.get('DOCKER_CONTAINER'):
+            db_path = '/app/data/miraprecios.db'
+        else:
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            db_path = os.path.join(base_dir, 'miraprecios_web', 'data', 'miraprecios.db')
     
     if not os.path.exists(db_path):
         print(f"Database not found at {db_path}")

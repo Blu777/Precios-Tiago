@@ -5,9 +5,16 @@ import urllib.error
 import ssl
 
 def main():
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    db_path = os.path.join(base_dir, 'miraprecios_web', 'data', 'miraprecios.db')
-    public_img_dir = os.path.join(base_dir, 'miraprecios_web', 'public', 'products')
+    # Detect paths (compatible with Docker)
+    db_path = os.getenv('DB_PATH')
+    if not db_path:
+        if os.path.exists('/app/data') or os.environ.get('DOCKER_CONTAINER'):
+            db_path = '/app/data/miraprecios.db'
+            public_img_dir = '/app/data/products' # Store in shared volume
+        else:
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            db_path = os.path.join(base_dir, 'miraprecios_web', 'data', 'miraprecios.db')
+            public_img_dir = os.path.join(base_dir, 'miraprecios_web', 'public', 'products')
     
     os.makedirs(public_img_dir, exist_ok=True)
     

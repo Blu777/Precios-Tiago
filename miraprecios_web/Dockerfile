@@ -46,10 +46,17 @@ ENV DATABASE_URL "file:///app/data/miraprecios.db"
 RUN apk add --no-cache openssl
 
 # Crear el directorio para montar el volumen de datos (correrá como root)
-RUN mkdir data
+RUN mkdir -p data/products
 
 # Copiamos recursos estáticos
 COPY --from=builder /app/public ./public
+
+# Crear enlace simbólico para que las imágenes descargadas en el volumen se sirvan públicamente
+RUN ln -s /app/data/products /app/public/products
+
+# Copiar esquema de prisma para poder ejecutar migraciones/push en producción
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/package.json ./package.json
 
 # Copiamos el build standalone generado y los estáticos
 COPY --from=builder /app/.next/standalone ./

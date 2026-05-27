@@ -22,7 +22,7 @@ export async function GET(request) {
                 precios_sucursales: {
                     where: {
                         disponible_online: true,   // NUEVO: Filtrar no disponibles
-                        precio_actual: { gt: 0 }   // NUEVO: Filtrar precios inválidos
+                        precio_actual: { gt: 10 }   // NUEVO: Filtrar precios inválidos fantasma (<= 10 pesos)
                     },
                     orderBy: { precio_actual: 'asc' }
                 }

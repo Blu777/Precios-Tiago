@@ -32,7 +32,10 @@ const TEXTOS = {
   na: 'N/A',
   quitarLista: 'Quitar de la lista',
   sumarLista: '+ Sumar a la lista',
-  noDisponible: 'No disponible'
+  noDisponible: 'No disponible',
+  verComparativaCompleta: 'Ver comparativa completa',
+  preciosTodos: 'Precios en todos los supermercados',
+  elMasBarato: 'El más barato'
 };
 
 const formatearPrecio = (precio) => {
@@ -117,7 +120,7 @@ export default function ProductCard({ producto }) {
                   onClick={() => setShowModal(true)}
                   className="text-xs font-medium text-gray-600 hover:text-emerald-700 flex items-center justify-between w-full transition-colors"
                 >
-                  <span>Ver comparativa completa</span>
+                  <span>{TEXTOS.verComparativaCompleta}</span>
                   <svg className="w-4 h-4 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -184,7 +187,7 @@ export default function ProductCard({ producto }) {
 
             {/* Lista de precios */}
             <div className="overflow-y-auto p-5 bg-gray-50/50">
-              <h3 className="text-sm font-bold text-gray-900 mb-4 px-1">Precios en todos los supermercados</h3>
+              <h3 className="text-sm font-bold text-gray-900 mb-4 px-1">{TEXTOS.preciosTodos}</h3>
               <div className="space-y-2">
                 {Array.from(SUPERMERCADOS.entries()).map(([id, sup], index) => {
                   const sucursalValida = validPrices.find(p => p.id === id);
@@ -211,7 +214,7 @@ export default function ProductCard({ producto }) {
                           </span>
                           {isWinner && (
                             <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wide">
-                              El más barato
+                              {TEXTOS.elMasBarato}
                             </span>
                           )}
                         </div>

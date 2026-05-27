@@ -1,0 +1,53 @@
+version: '3.8'
+
+# NOTA PARA TRUENAS SCALE:
+# Este Compose descarga las imágenes compiladas directamente desde GitHub Container Registry (GHCR)
+# Es ideal para ser importado en la interfaz de Custom Apps de TrueNAS o Dockge sin requerir código fuente.
+
+services:
+  scraper_init:
+    image: alpine:latest
+    container_name: miraprecios_init
+    command: >
+      sh -c "apk add --no-cache sqlite && sh /app/infra/init-container.sh"
+    volumes:
+      # Reemplazar con la ruta real a tu Dataset de DATOS en TrueNAS
+      - /mnt/POOL_NAME/DATASET/miraprecios/data:/app/data
+      # Reemplazar con la ruta real al repo clonado para leer el archivo init-db.sql
+      - /mnt/POOL_NAME/DATASET/miraprecios_repo/infra:/app/infra:ro
+    environment:
+      - PUID=568  # Usuario 'apps' en TrueNAS
+      - PGID=568  # Grupo 'apps' en TrueNAS
+    restart: "no"
+
+  frontend:
+    # Imagen referenciada desde GitHub Container Registry
+    image: ghcr.io/tiagonatale/miraprecios-web:latest
+    container_name: miraprecios_web
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mismo Dataset de DATOS, en modo lectura
+      - /mnt/POOL_NAME/DATASET/miraprecios/data:/app/data:ro
+    environment:
+      - DATABASE_PATH=/app/data/miraprecios.sqlite
+      - NODE_ENV=production
+    restart: unless-stopped
+    depends_on:
+      scraper_init:
+        condition: service_completed_successfully
+
+  scraper:
+    # Imagen referenciada desde GitHub Container Registry
+    image: ghcr.io/tiagonatale/miraprecios-scraper:latest
+    container_name: miraprecios_scraper
+    volumes:
+      # Mismo Dataset de DATOS, modo escritura
+      - /mnt/POOL_NAME/DATASET/miraprecios/data:/app/data
+    environment:
+      - PUID=568
+      - PGID=568
+    restart: unless-stopped
+    depends_on:
+      scraper_init:
+        condition: service_completed_successfully

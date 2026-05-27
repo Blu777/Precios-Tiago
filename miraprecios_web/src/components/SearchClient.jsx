@@ -1,32 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ProductCard from './ProductCard';
+import ProductCard from './ProductCard'; // Componente de presentación
 
 const TEXTOS = {
   noEncontramos: 'No encontramos',
-  sugerencia: 'Asegurate de escribir bien la marca o intentá buscar algo más genérico.'
+  sugerencia: 'Asegurate de escribir bien la marca o intentá buscar algo más genérico.',
+  errorConexion: 'Ocurrió un error al conectar con la base de datos.'
 };
-
-function getGroupKey(item) {
-  let normName = (item.name || '').toUpperCase()
-    .replace(/([0-9]+)(CC|ML|L|LT|LTS|GR|G|KG)/g, '$1 $2')
-    .replace(/CC/g, 'ML')
-    .replace(/LTS?/g, 'LT')
-    .replace(/[,.]/g, '');
-    
-  let tokens = normName.split(/\s+/);
-  const ignoreWords = ['GASEOSA', 'SABOR', 'LATA', 'BOTELLA', 'PET', 'X', 'DE', 'EL', 'LA'];
-  tokens = tokens.filter(t => !ignoreWords.includes(t));
-  
-  let brandStr = (item.brand || '').toUpperCase().replace(/COKE\/COCACOLA/g, 'COCA COLA');
-  let brandTokens = brandStr.split(/\s+/).filter(Boolean);
-  
-  let allTokens = [...new Set([...brandTokens, ...tokens])];
-  allTokens.sort();
-  
-  return allTokens.join(' ');
-}
 
 const SkeletonCard = () => (
   <div className="animate-pulse bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col gap-3">
@@ -42,99 +23,48 @@ export default function SearchClient() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Implementación del Debounce usando useEffect
+  // Todo el cálculo pesado (deduplicación, joins, ordenamiento) ahora ocurre en el servidor
   useEffect(() => {
-    if (query.length < 3) {
+    if (query.trim().length < 3) {
       setResults([]);
+      setError(null);
       return;
     }
 
     const controller = new AbortController();
 
-    const delayDebounceFn = setTimeout(() => {
+    const fetchSearchResults = async () => {
       setLoading(true);
-      fetch(`/api/buscar?q=${encodeURIComponent(query.toUpperCase())}`, {
-        signal: controller.signal
-      })
-        .then(res => res.json())
-        .then(data => {
-          // Agrupación y compactación de productos repetidos usando Map para mayor seguridad
-          const agrupados = data.reduce((acc, current) => {
-            const key = getGroupKey(current); // Agrupar usando heurística de tokens para juntar el mismo producto de distintos súper
-            
-            if (!acc.has(key)) {
-              acc.set(key, {
-                barcode: current.barcode,
-                name: current.name,
-                brand: current.brand,
-                weight: current.weight,
-                image_url: current.image_url,
-                sucursales: []
-              });
-            } else {
-              // Quedarnos con el nombre más largo y descriptivo
-              const existing = acc.get(key);
-              if (current.name && current.name.length > existing.name.length && !current.name.includes('CCSO')) {
-                existing.name = current.name;
-              }
-              if (!existing.image_url && current.image_url) {
-                existing.image_url = current.image_url;
-              }
-            }
-            
-            const productGroup = acc.get(key);
-
-            // Consolidar sucursales (Soporta formato con objeto "precios" o formato plano)
-            if (current.precios) {
-              for (const [supId, priceData] of Object.entries(current.precios)) {
-                if (priceData && priceData.precio_actual) {
-                  // Evitar duplicados del mismo súper para el mismo producto
-                  if (!productGroup.sucursales.some(s => s.id === supId)) {
-                    productGroup.sucursales.push({
-                      id: supId,
-                      precio: priceData.precio_actual,
-                      precioLista: priceData.precio_lista || priceData.precio_actual,
-                      product_url: priceData.product_url
-                    });
-                  }
-                }
-              }
-            } else if (current.supermercado) {
-              if (!productGroup.sucursales.some(s => s.id === current.supermercado)) {
-                productGroup.sucursales.push({
-                  id: current.supermercado,
-                  precio: current.precio || current.precio_actual,
-                  precioLista: current.precio_lista || current.precio || current.precio_actual,
-                  product_url: current.product_url
-                });
-              }
-            }
-            return acc;
-          }, new Map());
-
-          // Calcular metadatos dinámicos y ordenar array de sucursales de MENOR a MAYOR
-          const productosUnificados = Array.from(agrupados.values()).map(prod => {
-            prod.sucursales.sort((a, b) => a.precio - b.precio);
-            if (prod.sucursales.length > 0) {
-              prod.lowestPrice = prod.sucursales[0].precio;
-              prod.highestPrice = prod.sucursales.at(-1).precio;
-            } else {
-              prod.lowestPrice = null;
-              prod.highestPrice = null;
-            }
-            return prod;
-          });
-
-          setResults(productosUnificados);
-          setLoading(false);
-        })
-        .catch(err => {
-          if (err.name === 'AbortError') return;
-          console.error("Error fetching data:", err);
-          setLoading(false);
+      setError(null);
+      
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&page=1`, {
+          signal: controller.signal
         });
-    }, 300); // 300ms de gracia
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || TEXTOS.errorConexion);
+        }
+        
+        setResults(data.results || []);
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+        console.error("Error fetching data:", err);
+        setError(err.message);
+        setResults([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Debounce para evitar inundar la API mientras el usuario tipea
+    const delayDebounceFn = setTimeout(() => {
+      fetchSearchResults();
+    }, 350);
 
     return () => {
       clearTimeout(delayDebounceFn);
@@ -162,17 +92,25 @@ export default function SearchClient() {
         </div>
       </div>
 
+      {/* Manejo de Errores Limpio */}
+      {error && (
+        <div className="max-w-2xl mx-auto mb-8 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 text-center font-medium shadow-sm">
+          {error}
+        </div>
+      )}
+
+      {/* Grilla Responsiva de Productos */}
       <main className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-3 md:gap-4">
         {loading 
           ? Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)
           : results.map((producto) => (
-              <ProductCard key={producto.barcode || producto.name} producto={producto} />
+              <ProductCard key={producto.barcode} producto={producto} />
             ))
         }
       </main>
 
-      {/* Estado Vacío */}
-      {query.length >= 3 && !loading && results.length === 0 && (
+      {/* Estado Vacío / Sin Resultados */}
+      {query.trim().length >= 3 && !loading && !error && results.length === 0 && (
         <div className="text-center mt-12 bg-white max-w-lg mx-auto p-8 rounded-2xl shadow-sm border border-gray-100">
           <p className="text-gray-600 text-lg font-medium mb-2">{TEXTOS.noEncontramos} "{query}".</p>
           <p className="text-gray-400 text-sm">{TEXTOS.sugerencia}</p>

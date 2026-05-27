@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  scraper_init:
+    # Contenedor ligero para correr sqlite3 y comandos sh
+    image: alpine:latest
+    container_name: miraprecios_init
+    # Necesitamos instalar sqlite3 antes de correr el script
+    command: >
+      sh -c "apk add --no-cache sqlite && sh /app/infra/init-container.sh"
+    volumes:
+      - shared_data:/app/data
+      - ./infra:/app/infra:ro
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+    # Esto asegura que el contenedor termine después de ejecutar el comando
+    restart: "no"
+
+  frontend:
+    build: 
+      context: ./miraprecios_web
+      dockerfile: Dockerfile
+    container_name: miraprecios_web
+    ports:
+      - "3000:3000"
+    volumes:
+      # Montaje READ-ONLY para proteger la DB. El frontend no escribe.
+      - shared_data:/app/data:ro
+    environment:
+      - DATABASE_PATH=/app/data/miraprecios.sqlite
+    restart: unless-stopped
+    depends_on:
+      scraper_init:
+        # Espera a que el contenedor init termine exitosamente
+        condition: service_completed_successfully
+
+  scraper:
+    build:
+      context: ./miraprecios_scraper
+      dockerfile: Dockerfile
+    container_name: miraprecios_scraper
+    volumes:
+      # Montaje con permisos de escritura para que Scrapy actualice SQLite
+      - shared_data:/app/data
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+    restart: unless-stopped
+    command: cron -f # Este entrypoint se ajustará a las necesidades del scraper
+    depends_on:
+      scraper_init:
+        condition: service_completed_successfully
+
+volumes:
+  # Volumen persistente local de Docker
+  shared_data:
+    driver: local

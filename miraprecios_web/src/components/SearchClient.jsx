@@ -8,6 +8,26 @@ const TEXTOS = {
   sugerencia: 'Asegurate de escribir bien la marca o intentá buscar algo más genérico.'
 };
 
+function getGroupKey(item) {
+  let normName = (item.name || '').toUpperCase()
+    .replace(/([0-9]+)(CC|ML|L|LT|LTS|GR|G|KG)/g, '$1 $2')
+    .replace(/CC/g, 'ML')
+    .replace(/LTS?/g, 'LT')
+    .replace(/[,.]/g, '');
+    
+  let tokens = normName.split(/\s+/);
+  const ignoreWords = ['GASEOSA', 'SABOR', 'LATA', 'BOTELLA', 'PET', 'X', 'DE', 'EL', 'LA'];
+  tokens = tokens.filter(t => !ignoreWords.includes(t));
+  
+  let brandStr = (item.brand || '').toUpperCase().replace(/COKE\/COCACOLA/g, 'COCA COLA');
+  let brandTokens = brandStr.split(/\s+/).filter(Boolean);
+  
+  let allTokens = [...new Set([...brandTokens, ...tokens])];
+  allTokens.sort();
+  
+  return allTokens.join(' ');
+}
+
 const SkeletonCard = () => (
   <div className="animate-pulse bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col gap-3">
     <div className="w-full h-36 bg-gray-200 rounded-lg" />
@@ -41,7 +61,7 @@ export default function SearchClient() {
         .then(data => {
           // Agrupación y compactación de productos repetidos usando Map para mayor seguridad
           const agrupados = data.reduce((acc, current) => {
-            const key = current.name; // Agrupar estrictamente por nombre para evitar duplicados visuales
+            const key = getGroupKey(current); // Agrupar usando heurística de tokens para juntar el mismo producto de distintos súper
             
             if (!acc.has(key)) {
               acc.set(key, {
@@ -52,6 +72,15 @@ export default function SearchClient() {
                 image_url: current.image_url,
                 sucursales: []
               });
+            } else {
+              // Quedarnos con el nombre más largo y descriptivo
+              const existing = acc.get(key);
+              if (current.name && current.name.length > existing.name.length && !current.name.includes('CCSO')) {
+                existing.name = current.name;
+              }
+              if (!existing.image_url && current.image_url) {
+                existing.image_url = current.image_url;
+              }
             }
             
             const productGroup = acc.get(key);

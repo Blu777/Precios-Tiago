@@ -1,5 +1,3 @@
-version: '3.8'
-
 # NOTA PARA TRUENAS SCALE:
 # Este Compose descarga las imágenes compiladas directamente desde GitHub Container Registry (GHCR)
 # Es ideal para ser importado en la interfaz de Custom Apps de TrueNAS o Dockge sin requerir código fuente.
@@ -16,8 +14,8 @@ services:
       # Reemplazar con la ruta real al repo clonado para leer el archivo init-db.sql
       - /mnt/POOL_NAME/DATASET/miraprecios_repo/infra:/app/infra:ro
     environment:
-      - PUID=568  # Usuario 'apps' en TrueNAS
-      - PGID=568  # Grupo 'apps' en TrueNAS
+      - PUID=568 # Usuario 'apps' en TrueNAS
+      - PGID=568 # Grupo 'apps' en TrueNAS
     restart: "no"
 
   frontend:

@@ -17,7 +17,7 @@ services:
 
   frontend:
     # Reemplazamos "build:" por las imágenes compiladas en GitHub Registry
-    image: ghcr.io/tiagonatale/miraprecios-web:latest
+    image: ghcr.io/blu777/precios-tiago/miraprecios-web:latest
     container_name: miraprecios_web
     ports:
       - "3000:3000"
@@ -32,7 +32,7 @@ services:
 
   scraper:
     # Reemplazamos "build:" por las imágenes compiladas en GitHub Registry
-    image: ghcr.io/tiagonatale/miraprecios-scraper:latest
+    image: ghcr.io/blu777/precios-tiago/miraprecios-scraper:latest
     container_name: miraprecios_scraper
     volumes:
       - shared_data:/app/data

@@ -6,27 +6,45 @@ services:
   scraper_init:
     image: alpine:latest
     container_name: miraprecios_init
-    command: >
-      sh -c "apk add --no-cache sqlite && sh /app/infra/init-container.sh"
+    command:
+      - sh
+      - -c
+      - |
+        set -e
+        apk add --no-cache sqlite
+        mkdir -p /app/data
+        chown -R 568:568 /app/data
+        chmod -R 775 /app/data
+        cat << 'EOF' > /app/data/init-db.sql
+        PRAGMA journal_mode=WAL;
+        PRAGMA synchronous=NORMAL;
+        CREATE TABLE IF NOT EXISTS chains (id TEXT PRIMARY KEY, name TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS stores (id TEXT PRIMARY KEY, chain_id TEXT REFERENCES chains(id), name TEXT NOT NULL, format TEXT);
+        CREATE TABLE IF NOT EXISTS products (ean TEXT PRIMARY KEY, name TEXT NOT NULL, brand TEXT, image_url TEXT);
+        CREATE TABLE IF NOT EXISTS prices (product_ean TEXT REFERENCES products(ean), store_id TEXT REFERENCES stores(id), price REAL NOT NULL, list_price REAL, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (product_ean, store_id));
+        CREATE INDEX IF NOT EXISTS idx_prices_ean ON prices(product_ean);
+        CREATE INDEX IF NOT EXISTS idx_prices_store ON prices(store_id);
+        CREATE INDEX IF NOT EXISTS idx_prices_price ON prices(price);
+        CREATE VIRTUAL TABLE IF NOT EXISTS products_fts USING fts5(ean, name, brand, tokenize='porter');
+        CREATE TRIGGER IF NOT EXISTS after_product_insert AFTER INSERT ON products BEGIN INSERT INTO products_fts(ean, name, brand) VALUES (new.ean, new.name, new.brand); END;
+        CREATE TRIGGER IF NOT EXISTS after_product_delete AFTER DELETE ON products BEGIN DELETE FROM products_fts WHERE ean = old.ean; END;
+        CREATE TRIGGER IF NOT EXISTS after_product_update AFTER UPDATE ON products BEGIN DELETE FROM products_fts WHERE ean = old.ean; INSERT INTO products_fts(ean, name, brand) VALUES (new.ean, new.name, new.brand); END;
+        EOF
+        sqlite3 /app/data/miraprecios.sqlite < /app/data/init-db.sql
+        chown 568:568 /app/data/miraprecios.sqlite /app/data/init-db.sql
     volumes:
-      # Reemplazar con la ruta real a tu Dataset de DATOS en TrueNAS
-      - /mnt/POOL_NAME/DATASET/miraprecios/data:/app/data
-      # Reemplazar con la ruta real al repo clonado para leer el archivo init-db.sql
-      - /mnt/POOL_NAME/DATASET/miraprecios_repo/infra:/app/infra:ro
-    environment:
-      - PUID=568 # Usuario 'apps' en TrueNAS
-      - PGID=568 # Grupo 'apps' en TrueNAS
+      - /mnt/HMS/Precios/data:/app/data
     restart: "no"
 
   frontend:
     # Imagen referenciada desde GitHub Container Registry
-    image: ghcr.io/tiagonatale/miraprecios-web:latest
+    image: ghcr.io/blu777/precios-tiago/miraprecios-web:latest
     container_name: miraprecios_web
     ports:
       - "3000:3000"
     volumes:
       # Mismo Dataset de DATOS, en modo lectura
-      - /mnt/POOL_NAME/DATASET/miraprecios/data:/app/data:ro
+      - /mnt/HMS/Precios/data:/app/data:ro
     environment:
       - DATABASE_PATH=/app/data/miraprecios.sqlite
       - NODE_ENV=production
@@ -37,11 +55,11 @@ services:
 
   scraper:
     # Imagen referenciada desde GitHub Container Registry
-    image: ghcr.io/tiagonatale/miraprecios-scraper:latest
+    image: ghcr.io/blu777/precios-tiago/miraprecios-scraper:latest
     container_name: miraprecios_scraper
     volumes:
       # Mismo Dataset de DATOS, modo escritura
-      - /mnt/POOL_NAME/DATASET/miraprecios/data:/app/data
+      - /mnt/HMS/Precios/data:/app/data
     environment:
       - PUID=568
       - PGID=568

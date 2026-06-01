@@ -1,7 +1,10 @@
 import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, Column, String, Float, Integer, Boolean, DateTime, ForeignKey, UniqueConstraint, text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.sql import func
+
+load_dotenv()
 
 Base = declarative_base()
 

@@ -25,3 +25,8 @@ miraprecios_web/data/
 # Archivos de SO
 .DS_Store
 Thumbs.db
+
+.vscode/
+
+docker-compose.truenas.yml
+README_TRUENAS.md

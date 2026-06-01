@@ -39,7 +39,7 @@ export async function GET(request) {
             .filter(prod => prod.precios_sucursales.length > 0)
             .map(prod => {
                 const lowestPrice = prod.precios_sucursales.length > 0 ? prod.precios_sucursales[0].precio_actual : null;
-                const highestPrice = prod.precios_sucursales.length > 0 ? prod.precios_sucursales[prod.precios_sucursales.length - 1].precio_actual : null;
+                const highestPrice = prod.precios_sucursales.length > 0 ? prod.precios_sucursales.at(-1).precio_actual : null;
 
                 return {
                     barcode: prod.ean,

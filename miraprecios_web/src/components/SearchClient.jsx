@@ -40,7 +40,7 @@ export default function SearchClient() {
       setError(null);
       
       try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&page=1`, {
+        const response = await fetch(`/api/buscar?q=${encodeURIComponent(query)}&page=1`, {
           signal: controller.signal
         });
         

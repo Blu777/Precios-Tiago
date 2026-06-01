@@ -14,8 +14,7 @@ const nextConfig = {
         hostname: '**',
       },
     ],
-  },
-  serverExternalPackages: ['better-sqlite3'],
+  }
 };
 
 module.exports = nextConfig;

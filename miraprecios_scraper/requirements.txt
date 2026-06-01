@@ -4,3 +4,4 @@ scrapy-rotating-proxies>=0.6.2
 SQLAlchemy>=2.0
 pandas>=2.0.0
 rapidfuzz>=3.0.0
+sqlalchemy-libsql>=0.1.1

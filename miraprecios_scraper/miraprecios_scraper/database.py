@@ -34,6 +34,20 @@ class SucursalPrecio(Base):
     )
 
 def get_engine():
+    turso_url = os.getenv('TURSO_DATABASE_URL')
+    turso_token = os.getenv('TURSO_AUTH_TOKEN')
+    
+    if turso_url and turso_token:
+        if turso_url.startswith("libsql://"):
+            db_url = turso_url.replace("libsql://", "sqlite+libsql://", 1)
+        else:
+            db_url = f"sqlite+libsql://{turso_url.replace('https://', '')}"
+            
+        url = f"{db_url}?authToken={turso_token}&secure=true"
+        engine = create_engine(url)
+        Base.metadata.create_all(engine)
+        return engine
+
     # Allow override via environment variable
     db_path = os.getenv('DB_PATH')
     if not db_path:

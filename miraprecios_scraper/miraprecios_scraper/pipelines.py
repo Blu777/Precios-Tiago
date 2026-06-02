@@ -101,7 +101,7 @@ class SQLitePipeline:
             ean=ean,
             nombre_estandarizado=item.get('name', ''),
             marca=item.get('brand'),
-            contenido_neto=item.get('net_content'),
+            contenido_neto=float(item.get('net_content')) if item.get('net_content') is not None else 0.0,
             unidad_medida=item.get('unit'),
         )
         
@@ -126,7 +126,7 @@ class SQLitePipeline:
             producto_ean=ean,
             supermercado_id=supermarket_id,
             precio_actual=precio_actual,
-            precio_lista=item.get('precio_lista', precio_actual),
+            precio_lista=float(item.get('precio_lista')) if item.get('precio_lista') is not None else float(precio_actual),
             url_imagen=item.get('image_url'),
             product_url=item.get('product_url'),
             disponible_online=item.get('disponible_online', True)

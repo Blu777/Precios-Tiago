@@ -183,7 +183,7 @@ def process_sepa_daily_dir(base_dir):
             'ean': ean,
             'nombre_estandarizado': nombre_estandarizado,
             'marca': marca if marca else None,
-            'contenido_neto': float(contenido_neto) if not pd.isna(contenido_neto) and contenido_neto else None,
+            'contenido_neto': float(contenido_neto) if not pd.isna(contenido_neto) and contenido_neto else 0.0,
             'unidad_medida': unidad_medida if not pd.isna(unidad_medida) and unidad_medida else None,
         })
         

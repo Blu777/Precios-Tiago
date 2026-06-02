@@ -30,6 +30,7 @@ RUN npx prisma generate
 
 # Compilar la aplicación. Al tener output: "standalone" configurado, 
 # se generará una versión auto-contenida ultraliviana.
+RUN mkdir -p /app/data
 RUN npm run build
 
 # ----------------------------------------

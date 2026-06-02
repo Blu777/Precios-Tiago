@@ -58,6 +58,20 @@ class DataNormalizationPipeline:
         return item
 
 
+import requests
+import os
+
+def send_webhook_alert(message):
+    webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
+    if webhook_url:
+        try:
+            requests.post(webhook_url, json={"content": f"🚨 **MiraPrecios Alert**: {message}"}, timeout=5)
+        except Exception as e:
+            pass # Fail silently if webhook fails
+    else:
+        # Fallback to stdout log if no webhook configured
+        print(f"CRITICAL [WEBHOOK SIMULADO]: {message}")
+
 class SQLitePipeline:
     """
     Pipeline que guarda los items normalizados en la base de datos SQLite.
@@ -69,6 +83,8 @@ class SQLitePipeline:
         self.session = None
         self._pending_maestro = []
         self._pending_precio = []
+        self._error_count = 0
+        self._alert_sent = False
 
     def open_spider(self, spider):
         self.session = get_session()
@@ -86,73 +102,77 @@ class SQLitePipeline:
         return f"SYN-{hash_obj.hexdigest()[:10].upper()}"
 
     def process_item(self, item, spider):
-        ean = item.get('barcode') or item.get('ean')
-        
-        # Generar EAN sintético si no viene
-        if not ean:
-            ean = self.generate_synthetic_ean(item.get('name'), item.get('brand'))
-        else:
-            ean = str(ean).strip()
-            if ean.endswith('.0'):
-                ean = ean[:-2]
+        try:
+            ean = item.get('barcode') or item.get('ean')
+            
+            # Generar EAN sintético si no viene
+            if not ean:
+                ean = self.generate_synthetic_ean(item.get('name'), item.get('brand'))
+            else:
+                ean = str(ean).strip()
+                if ean.endswith('.0'):
+                    ean = ean[:-2]
 
-        supermarket_id = item.get('supermarket', getattr(spider, 'name', 'unknown')).lower()
-        
-        # 1. Upsert en ProductoMaestro (para asegurar la FK)
-        stmt_maestro = insert(ProductoMaestro).values(
-            ean=ean,
-            nombre_estandarizado=item.get('name', ''),
-            marca=item.get('brand'),
-            contenido_neto=float(item.get('net_content')) if item.get('net_content') is not None else 0.0,
-            unidad_medida=item.get('unit'),
-        )
-        
-        # Si ya existe (especialmente EANs reales), tal vez no queremos sobreescribir todo,
-        # pero para simplificar, actualizamos con lo último scrapeado si faltan datos
-        on_conflict_maestro = stmt_maestro.on_conflict_do_update(
-            index_elements=['ean'],
-            set_={
-                'nombre_estandarizado': stmt_maestro.excluded.nombre_estandarizado,
-                'marca': stmt_maestro.excluded.marca
-            }
-        )
-        
-        precio_actual = item.get('precio_actual') or item.get('price')
-        
-        if precio_actual is None:
-            # No podemos guardar un producto sin precio
-            return item
+            supermarket_id = item.get('supermarket', getattr(spider, 'name', 'unknown')).lower()
+            
+            # 1. Upsert en ProductoMaestro (para asegurar la FK)
+            stmt_maestro = insert(ProductoMaestro).values(
+                ean=ean,
+                nombre_estandarizado=item.get('name', ''),
+                marca=item.get('brand'),
+                contenido_neto=float(item.get('net_content')) if item.get('net_content') is not None else 0.0,
+                unidad_medida=item.get('unit'),
+            )
+            
+            on_conflict_maestro = stmt_maestro.on_conflict_do_update(
+                index_elements=['ean'],
+                set_={
+                    'nombre_estandarizado': stmt_maestro.excluded.nombre_estandarizado,
+                    'marca': stmt_maestro.excluded.marca
+                }
+            )
+            
+            precio_actual = item.get('precio_actual') or item.get('price')
+            
+            if precio_actual is None:
+                return item
 
-        # 2. Upsert en SucursalPrecio
-        stmt_precio = insert(SucursalPrecio).values(
-            producto_ean=ean,
-            supermercado_id=supermarket_id,
-            precio_actual=precio_actual,
-            precio_lista=float(item.get('precio_lista')) if item.get('precio_lista') is not None else float(precio_actual),
-            url_imagen=item.get('image_url'),
-            product_url=item.get('product_url'),
-            disponible_online=item.get('disponible_online', True)
-        )
-        
-        # UniqueConstraint: [producto_ean, supermercado_id]
-        on_conflict_precio = stmt_precio.on_conflict_do_update(
-            index_elements=['producto_ean', 'supermercado_id'],
-            set_={
-                'precio_actual': stmt_precio.excluded.precio_actual,
-                'precio_lista': stmt_precio.excluded.precio_lista,
-                'url_imagen': stmt_precio.excluded.url_imagen,
-                'product_url': stmt_precio.excluded.product_url,
-                'disponible_online': stmt_precio.excluded.disponible_online,
-                'ultima_actualizacion': stmt_precio.excluded.ultima_actualizacion
-            }
-        )
+            # 2. Upsert en SucursalPrecio
+            stmt_precio = insert(SucursalPrecio).values(
+                producto_ean=ean,
+                supermercado_id=supermarket_id,
+                precio_actual=precio_actual,
+                precio_lista=float(item.get('precio_lista')) if item.get('precio_lista') is not None else float(precio_actual),
+                url_imagen=item.get('image_url'),
+                product_url=item.get('product_url'),
+                disponible_online=item.get('disponible_online', True)
+            )
+            
+            on_conflict_precio = stmt_precio.on_conflict_do_update(
+                index_elements=['producto_ean', 'supermercado_id'],
+                set_={
+                    'precio_actual': stmt_precio.excluded.precio_actual,
+                    'precio_lista': stmt_precio.excluded.precio_lista,
+                    'url_imagen': stmt_precio.excluded.url_imagen,
+                    'product_url': stmt_precio.excluded.product_url,
+                    'disponible_online': stmt_precio.excluded.disponible_online,
+                    'ultima_actualizacion': stmt_precio.excluded.ultima_actualizacion
+                }
+            )
 
-        self._pending_maestro.append(on_conflict_maestro)
-        self._pending_precio.append(on_conflict_precio)
+            self._pending_maestro.append(on_conflict_maestro)
+            self._pending_precio.append(on_conflict_precio)
 
-        if len(self._pending_precio) >= self.BATCH_SIZE:
-            self._flush(spider)
+            if len(self._pending_precio) >= self.BATCH_SIZE:
+                self._flush(spider)
 
+        except Exception as e:
+            self._error_count += 1
+            spider.logger.error(f"Error procesando item: {e}")
+            if self._error_count > 20 and not self._alert_sent:
+                send_webhook_alert(f"Múltiples errores detectados en spider {spider.name}. Posible cambio en API de VTEX.")
+                self._alert_sent = True
+                
         return item
 
     def _flush(self, spider=None):
@@ -165,10 +185,16 @@ class SQLitePipeline:
             for stmt in self._pending_precio:
                 self.session.execute(stmt)
             self.session.commit()
+            # Reseteo de errores en caso de commit exitoso
+            self._error_count = max(0, self._error_count - 1)
         except Exception as e:
             self.session.rollback()
+            self._error_count += 5 # Penalizar fuertemente fallos de DB
             if spider:
                 spider.logger.error(f"Error insertando batch en DB: {e}")
+            if self._error_count > 20 and not self._alert_sent:
+                send_webhook_alert("Fallo crítico en base de datos al realizar Bulk Insert. Revisa el lock de SQLite.")
+                self._alert_sent = True
         finally:
             self._pending_maestro.clear()
             self._pending_precio.clear()

@@ -16,8 +16,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar el proyecto
 COPY . .
 
-# Hacer ejecutable nuestro script orquestador
-RUN chmod +x run_scraper.sh
-
-# El entrypoint es el script de bash que corre el scraper y renombra el JSON
-ENTRYPOINT ["/app/run_scraper.sh"]
+# El entrypoint es el demonio en Python
+ENTRYPOINT ["python", "daemon.py"]

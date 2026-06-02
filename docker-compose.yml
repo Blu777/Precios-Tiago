@@ -2,45 +2,48 @@ version: '3.8'
 
 services:
   scraper_init:
-    # Contenedor ligero para correr sqlite3 y comandos sh
+    # Contenedor ligero para inicializar la DB y corregir permisos en TrueNAS Scale (EACCES fix)
     image: alpine:latest
     container_name: miraprecios_init
     command: >
-      sh -c "apk add --no-cache sqlite && sh /app/infra/init-container.sh"
+      sh -c "mkdir -p /app/data && touch /app/data/miraprecios.db && chown -R $${PUID:-1000}:$${PGID:-1000} /app/data"
     volumes:
       - shared_data:/app/data
-      - ./infra:/app/infra:ro
     environment:
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
     restart: "no"
 
   frontend:
-    # Reemplazamos "build:" por las imágenes compiladas en GitHub Registry
     image: ghcr.io/blu777/precios-tiago/miraprecios-web:latest
     container_name: miraprecios_web
+    user: "${PUID:-1000}:${PGID:-1000}"
     ports:
       - "3000:3000"
     volumes:
       - shared_data:/app/data:ro
     environment:
-      - DATABASE_PATH=/app/data/miraprecios.sqlite
+      - DATABASE_URL=file:///app/data/miraprecios.db
+      - TZ=America/Argentina/Buenos_Aires
     restart: unless-stopped
     depends_on:
       scraper_init:
         condition: service_completed_successfully
 
   scraper:
-    # Reemplazamos "build:" por las imágenes compiladas en GitHub Registry
     image: ghcr.io/blu777/precios-tiago/miraprecios-scraper:latest
     container_name: miraprecios_scraper
+    user: "${PUID:-1000}:${PGID:-1000}"
     volumes:
       - shared_data:/app/data
     environment:
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
-      - TURSO_DATABASE_URL=${TURSO_DATABASE_URL}
-      - TURSO_AUTH_TOKEN=${TURSO_AUTH_TOKEN}
+      - TZ=America/Argentina/Buenos_Aires
+      - DB_PATH=/app/data/miraprecios.db
+      - TURSO_DATABASE_URL=${TURSO_DATABASE_URL:-}
+      - TURSO_AUTH_TOKEN=${TURSO_AUTH_TOKEN:-}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
     restart: unless-stopped
     depends_on:
       scraper_init:

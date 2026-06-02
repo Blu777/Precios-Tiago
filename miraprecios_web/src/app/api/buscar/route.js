@@ -89,8 +89,22 @@ export async function GET(request) {
                     const uniqueSucursales = new Map();
                     for (const s of group.precios_sucursales) {
                         const existing = uniqueSucursales.get(s.supermercado_id);
-                        if (!existing || s.precio_actual < existing.precio_actual) {
+                        
+                        if (!existing) {
                             uniqueSucursales.set(s.supermercado_id, s);
+                        } else {
+                            // Si el nuevo tiene URL y el existente NO, priorizar el que tiene URL (online > físico SEPA)
+                            if (s.product_url && !existing.product_url) {
+                                uniqueSucursales.set(s.supermercado_id, s);
+                            } 
+                            // Si el existente tiene URL y el nuevo NO, mantener el existente
+                            else if (!s.product_url && existing.product_url) {
+                                continue;
+                            } 
+                            // Si ambos tienen o ambos no tienen, quedarnos con el de menor precio
+                            else if (s.precio_actual < existing.precio_actual) {
+                                uniqueSucursales.set(s.supermercado_id, s);
+                            }
                         }
                     }
                     group.precios_sucursales = Array.from(uniqueSucursales.values());

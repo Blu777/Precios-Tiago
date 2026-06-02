@@ -61,6 +61,9 @@ export default function ProductCard({ producto }) {
   const cheapestBranch = validPrices.length > 0 ? validPrices[0] : null;
   const cheapestSup = cheapestBranch ? (SUPERMERCADOS.get(cheapestBranch.id) || { nombre: cheapestBranch.id }) : null;
 
+  const hasDiscount = cheapestBranch && cheapestBranch.precioLista && cheapestBranch.precioLista > cheapestBranch.precio;
+  const discountPercent = hasDiscount ? Math.round((1 - (cheapestBranch.precio / cheapestBranch.precioLista)) * 100) : 0;
+
   return (
     <>
       <div className="group relative flex flex-row sm:flex-col bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all p-2 sm:p-3 gap-2 sm:gap-3 w-full">
@@ -96,12 +99,41 @@ export default function ProductCard({ producto }) {
           </div>
 
           {/* Precio y Comparativa */}
-          <div className="mt-2 sm:mt-4">
-            <div className="flex items-end gap-2" onClick={() => setShowModal(true)}>
-              <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 tracking-tight cursor-pointer hover:text-emerald-500 transition-colors">
-                {lowestPrice !== null ? formatearPrecio(lowestPrice) : TEXTOS.na}
-              </span>
-            </div>
+          <div className="mt-2 sm:mt-4 flex flex-col gap-1">
+            {lowestPrice !== null ? (
+              <div 
+                className="flex flex-col cursor-pointer hover:opacity-80 transition-opacity" 
+                onClick={() => setShowModal(true)}
+              >
+                {/* Descuento si existe */}
+                {hasDiscount && (
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-xs text-gray-400 line-through font-medium">
+                      {formatearPrecio(cheapestBranch.precioLista)}
+                    </span>
+                    <span className="text-[10px] font-bold text-white bg-red-500 px-1.5 py-0.5 rounded shadow-sm">
+                      -{discountPercent}%
+                    </span>
+                  </div>
+                )}
+                
+                {/* Precio y Supermercado */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 tracking-tight">
+                    {formatearPrecio(lowestPrice)}
+                  </span>
+                  {cheapestSup && cheapestSup.logo && (
+                    <div className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white shadow-sm border border-gray-100 p-0.5 overflow-hidden flex-shrink-0" title={`Encontrado en ${cheapestSup.nombre}`}>
+                       <img src={cheapestSup.logo} alt={cheapestSup.nombre} className="w-full h-full object-contain" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="text-xl sm:text-2xl font-extrabold text-gray-400 tracking-tight">
+                {TEXTOS.na}
+              </div>
+            )}
 
             {/* Disponibilidad: 1 supermercado vs múltiples */}
             {validPrices.length === 1 && (
@@ -201,8 +233,12 @@ export default function ProductCard({ producto }) {
                         }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${sup.bg} ${sup.colorText}`}>
-                          {sup.nombre.charAt(0)}
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center overflow-hidden bg-white shadow-sm border border-gray-100 p-0.5 ${!sup.logo ? sup.bg : ''}`}>
+                          {sup.logo ? (
+                            <img src={sup.logo} alt={sup.nombre} className="w-full h-full object-contain" />
+                          ) : (
+                            <span className={`font-bold text-xs ${sup.colorText}`}>{sup.nombre.charAt(0)}</span>
+                          )}
                         </div>
                         <div className="flex flex-col">
                           <span className={`font-semibold text-sm ${sucursalValida ? 'text-gray-900' : 'text-gray-500'}`}>

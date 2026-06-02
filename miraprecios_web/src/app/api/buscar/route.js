@@ -30,8 +30,7 @@ export async function GET(request) {
                     orderBy: { precio_actual: 'asc' }
                 }
             },
-            take: 24,
-            skip: (page - 1) * 24
+            take: 300 // Extraer suficientes para agrupar antes de paginar
         });
 
         // --- Inicio Algoritmo de Agrupación (Fuzzy Clustering) ---
@@ -81,12 +80,12 @@ export async function GET(request) {
             for (const group of groupedProducts) {
                 const sim = calculateSimilarity(prodTokens, group.tokens);
                 
-                // Umbral de 0.50 con las restricciones anteriores es muy preciso
+                // Umbral de 0.50 con las restricciones numéricas funciona perfecto
                 if (sim >= 0.50) {
                     // Fusionar sucursales
                     group.precios_sucursales = [...group.precios_sucursales, ...prod.precios_sucursales];
                     
-                    // Deduplicar sucursales por supermercado (quedarse con el más barato si hay conflicto)
+                    // Deduplicar sucursales por supermercado
                     const uniqueSucursales = new Map();
                     for (const s of group.precios_sucursales) {
                         const existing = uniqueSucursales.get(s.supermercado_id);
@@ -113,8 +112,12 @@ export async function GET(request) {
         }
         // --- Fin Algoritmo de Agrupación ---
 
-        // Armar estructura para ProductCard usando groupedProducts
+        // Armar estructura final, paginando LOS RESULTADOS AGRUPADOS
+        const startIndex = (page - 1) * 24;
+        const endIndex = startIndex + 24;
+        
         const finalResults = groupedProducts
+            .slice(startIndex, endIndex)
             .map(prod => {
                 const lowestPrice = prod.precios_sucursales.length > 0 ? prod.precios_sucursales[0].precio_actual : null;
                 const highestPrice = prod.precios_sucursales.length > 0 ? prod.precios_sucursales.at(-1).precio_actual : null;

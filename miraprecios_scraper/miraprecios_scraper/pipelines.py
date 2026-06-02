@@ -93,6 +93,8 @@ class SQLitePipeline:
             ean = self.generate_synthetic_ean(item.get('name'), item.get('brand'))
         else:
             ean = str(ean).strip()
+            if ean.endswith('.0'):
+                ean = ean[:-2]
 
         supermarket_id = item.get('supermarket', getattr(spider, 'name', 'unknown')).lower()
         

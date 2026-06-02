@@ -183,7 +183,7 @@ def process_sepa_daily_dir(base_dir):
             'ean': ean,
             'nombre_estandarizado': nombre_estandarizado,
             'marca': marca if marca else None,
-            'contenido_neto': float(contenido_neto) if not pd.isna(contenido_neto) and contenido_neto else 0.0,
+            'contenido_neto': float(contenido_neto) if not pd.isna(contenido_neto) and contenido_neto and str(contenido_neto).lower() != 'nan' else 0.0,
             'unidad_medida': unidad_medida if not pd.isna(unidad_medida) and unidad_medida else None,
         })
         
@@ -200,6 +200,8 @@ def process_sepa_daily_dir(base_dir):
     if records_maestro:
         # Deduplicar maestro por ean
         maestro_df = pd.DataFrame(records_maestro).drop_duplicates(subset=['ean'])
+        maestro_df['contenido_neto'] = maestro_df['contenido_neto'].fillna(0.0)
+        maestro_df = maestro_df.replace({np.nan: None})
         maestro_dicts = maestro_df.to_dict('records')
         
         chunk_size = 1000
@@ -227,6 +229,9 @@ def process_sepa_daily_dir(base_dir):
     if records_precio:
         # Deduplicar precio por ean y supermercado (por si acaso)
         precio_df = pd.DataFrame(records_precio).drop_duplicates(subset=['producto_ean', 'supermercado_id'])
+        precio_df['precio_actual'] = precio_df['precio_actual'].fillna(0.0)
+        precio_df['precio_lista'] = precio_df['precio_lista'].fillna(0.0)
+        precio_df = precio_df.replace({np.nan: None})
         precio_dicts = precio_df.to_dict('records')
         
         chunk_size = 1000

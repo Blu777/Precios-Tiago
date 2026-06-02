@@ -7,20 +7,14 @@ const client = createClient({
 
 async function run() {
   const rs = await client.execute(`
-    SELECT ean, nombre_estandarizado
-    FROM ProductoMaestro
-    WHERE ean LIKE '%.0'
-    LIMIT 5
+    SELECT pm.ean, pm.nombre_estandarizado, sp.supermercado_id, sp.precio_actual
+    FROM ProductoMaestro pm
+    JOIN SucursalPrecio sp ON pm.ean = sp.producto_ean
+    WHERE pm.nombre_estandarizado LIKE '%COCA%2250%'
+       OR pm.nombre_estandarizado LIKE '%COCA%2.25%'
   `);
-  console.log("With .0:", rs.rows);
-  
-  const rs2 = await client.execute(`
-    SELECT ean, nombre_estandarizado
-    FROM ProductoMaestro
-    WHERE ean NOT LIKE '%.0' AND ean NOT LIKE 'SYN-%'
-    LIMIT 5
-  `);
-  console.log("Without .0:", rs2.rows);
+  console.log("Variations of Coca Cola 2.25L:");
+  console.log(rs.rows);
 }
 
 run().catch(console.error);

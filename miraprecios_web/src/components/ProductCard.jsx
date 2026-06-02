@@ -12,10 +12,8 @@ const SUPERMERCADOS = new Map([
   ['changomas', { nombre: 'ChangoMás', logo: 'https://changomas.com.ar/favicon.ico', colorText: 'text-yellow-600', bg: 'bg-yellow-50' }],
   // Supermercados Día
   ['dia', { nombre: 'Día', logo: 'https://cdn.icon-icons.com/icons2/2699/PNG/512/dia_supermercado_logo_icon_170701.png', colorText: 'text-red-600', bg: 'bg-red-50' }],
-  // Carrefour (todos los formatos)
+  // Carrefour
   ['carrefour', { nombre: 'Carrefour', logo: 'https://www.carrefour.com.ar/favicon.ico', colorText: 'text-blue-500', bg: 'bg-blue-50' }],
-  ['carrefour_express', { nombre: 'Carrefour Express', logo: 'https://www.carrefour.com.ar/favicon.ico', colorText: 'text-sky-600', bg: 'bg-sky-50' }],
-  ['carrefour_maxi', { nombre: 'Carrefour Maxi', logo: 'https://www.carrefour.com.ar/favicon.ico', colorText: 'text-indigo-700', bg: 'bg-indigo-50' }],
   // Coto
   ['coto', { nombre: 'Coto', logo: 'https://www.coto.com.ar/favicon.ico', colorText: 'text-orange-700', bg: 'bg-orange-50' }],
   // La Anónima
@@ -51,7 +49,7 @@ export default function ProductCard({ producto }) {
   const [showModal, setShowModal] = useState(false);
   const [imageError, setImageError] = useState(false);
   const { cart, addToCart, removeFromCart } = useCart();
-  
+
   const inCart = cart.some(p => p.name === producto.name);
 
   // Utiliza los datos consolidados generados en SearchClient
@@ -66,16 +64,16 @@ export default function ProductCard({ producto }) {
   return (
     <>
       <div className="group relative flex flex-row sm:flex-col bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all p-2 sm:p-3 gap-2 sm:gap-3 w-full">
-        
+
         {/* Imagen */}
-        <div 
+        <div
           onClick={() => setShowModal(true)}
           className="w-20 h-20 sm:w-full sm:h-36 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center relative p-1 sm:p-2 cursor-pointer"
         >
           {producto.image_url && !imageError ? (
-            <Image 
-              src={producto.image_url} 
-              alt={producto.name || "Producto"} 
+            <Image
+              src={producto.image_url}
+              alt={producto.name || "Producto"}
               fill
               sizes="(max-width: 640px) 96px, 100vw"
               className="object-contain group-hover:scale-105 transition-transform mix-blend-multiply p-2"
@@ -88,7 +86,7 @@ export default function ProductCard({ producto }) {
 
         {/* Info y Precios */}
         <div className="flex flex-col flex-1 justify-between">
-          
+
           {/* Cabecera */}
           <div onClick={() => setShowModal(true)} className="cursor-pointer">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{producto.brand || TEXTOS.variasMarcas}</span>
@@ -104,7 +102,7 @@ export default function ProductCard({ producto }) {
                 {lowestPrice !== null ? formatearPrecio(lowestPrice) : TEXTOS.na}
               </span>
             </div>
-            
+
             {/* Disponibilidad: 1 supermercado vs múltiples */}
             {validPrices.length === 1 && (
               <div className="mt-1">
@@ -116,7 +114,7 @@ export default function ProductCard({ producto }) {
 
             {validPrices.length > 1 && (
               <div className="mt-3 border-t border-gray-100 pt-2">
-                <button 
+                <button
                   onClick={() => setShowModal(true)}
                   className="text-xs font-medium text-gray-600 hover:text-emerald-700 flex items-center justify-between w-full transition-colors"
                 >
@@ -131,13 +129,12 @@ export default function ProductCard({ producto }) {
 
             {/* Botón Agregar a Lista */}
             <div className="mt-3">
-              <button 
+              <button
                 onClick={() => inCart ? removeFromCart(producto.name) : addToCart(producto)}
-                className={`w-full py-2 rounded-lg text-xs font-bold transition-colors ${
-                  inCart 
-                    ? 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600' 
+                className={`w-full py-2 rounded-lg text-xs font-bold transition-colors ${inCart
+                    ? 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600'
                     : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
-                }`}
+                  }`}
               >
                 {inCart ? TEXTOS.quitarLista : TEXTOS.sumarLista}
               </button>
@@ -149,7 +146,7 @@ export default function ProductCard({ producto }) {
       {/* MODAL */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setShowModal(false)}>
-          <div 
+          <div
             className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col relative animate-in fade-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
@@ -158,9 +155,9 @@ export default function ProductCard({ producto }) {
               <div className="flex gap-4">
                 <div className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center relative p-1">
                   {producto.image_url && !imageError ? (
-                    <Image 
-                      src={producto.image_url} 
-                      alt={producto.name || "Producto"} 
+                    <Image
+                      src={producto.image_url}
+                      alt={producto.name || "Producto"}
                       fill
                       sizes="64px"
                       className="object-contain mix-blend-multiply"
@@ -174,7 +171,7 @@ export default function ProductCard({ producto }) {
                   <h2 className="text-lg font-semibold text-gray-900 leading-tight">{producto.name}</h2>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setShowModal(false)}
                 className="text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 p-2 rounded-full transition-colors"
                 aria-label="Cerrar modal"
@@ -194,15 +191,14 @@ export default function ProductCard({ producto }) {
                   const isWinner = sucursalValida && cheapestBranch && sucursalValida.precio === cheapestBranch.precio;
 
                   return (
-                    <div 
-                      key={id} 
-                      className={`flex justify-between items-center p-3 rounded-xl border transition-all ${
-                        sucursalValida 
-                          ? isWinner 
-                            ? 'bg-emerald-50 border-emerald-200 shadow-sm' 
+                    <div
+                      key={id}
+                      className={`flex justify-between items-center p-3 rounded-xl border transition-all ${sucursalValida
+                          ? isWinner
+                            ? 'bg-emerald-50 border-emerald-200 shadow-sm'
                             : 'bg-white border-gray-200 shadow-sm'
                           : 'bg-gray-100/50 border-transparent opacity-75'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${sup.bg} ${sup.colorText}`}>
@@ -219,7 +215,7 @@ export default function ProductCard({ producto }) {
                           )}
                         </div>
                       </div>
-                      
+
                       <div className="flex flex-col items-end">
                         {sucursalValida ? (
                           <div className="flex items-center gap-2">
@@ -227,11 +223,11 @@ export default function ProductCard({ producto }) {
                               {formatearPrecio(sucursalValida.precio)}
                             </span>
                             {sucursalValida.product_url && (
-                              <a 
-                                href={sucursalValida.product_url} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="bg-blue-50 text-blue-600 p-1.5 rounded hover:bg-blue-100 transition-colors" 
+                              <a
+                                href={sucursalValida.product_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-blue-50 text-blue-600 p-1.5 rounded hover:bg-blue-100 transition-colors"
                                 title={`Ver en ${sup.nombre}`}
                               >
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -251,16 +247,15 @@ export default function ProductCard({ producto }) {
                 })}
               </div>
             </div>
-            
+
             {/* Footer Modal */}
             <div className="p-4 border-t border-gray-100 bg-white">
-              <button 
+              <button
                 onClick={() => inCart ? removeFromCart(producto.name) : addToCart(producto)}
-                className={`w-full py-3 rounded-xl text-sm font-bold shadow-sm transition-all ${
-                  inCart 
-                    ? 'bg-red-50 text-red-600 hover:bg-red-100' 
+                className={`w-full py-3 rounded-xl text-sm font-bold shadow-sm transition-all ${inCart
+                    ? 'bg-red-50 text-red-600 hover:bg-red-100'
                     : 'bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow-md'
-                }`}
+                  }`}
               >
                 {inCart ? TEXTOS.quitarLista : TEXTOS.sumarLista}
               </button>

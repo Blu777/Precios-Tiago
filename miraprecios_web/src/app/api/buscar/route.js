@@ -30,7 +30,7 @@ export async function GET(request) {
                     orderBy: { precio_actual: 'asc' }
                 }
             },
-            take: 300 // Extraer suficientes para agrupar antes de paginar
+            take: Math.max(300, page * 24 + 100) // Extraer suficientes para agrupar antes de paginar
         });
 
         // --- Inicio Algoritmo de Agrupación (Fuzzy Clustering) ---

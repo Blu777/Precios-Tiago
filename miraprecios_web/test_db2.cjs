@@ -9,8 +9,7 @@ async function run() {
   const rs = await client.execute(`
     SELECT ean, nombre_estandarizado, marca, contenido_neto, unidad_medida
     FROM ProductoMaestro
-    WHERE nombre_estandarizado LIKE '%COCA%2250%'
-       OR nombre_estandarizado LIKE '%COCA%2.25%'
+    WHERE ean = '7790895000997'
   `);
   console.log(rs.rows);
 }

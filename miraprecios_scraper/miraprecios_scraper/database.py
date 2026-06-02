@@ -46,8 +46,8 @@ def get_engine():
         else:
             db_url = f"sqlite+libsql://{turso_url.replace('https://', '')}"
             
-        url = f"{db_url}/?authToken={turso_token}&secure=true"
-        engine = create_engine(url)
+        url = f"{db_url}/?secure=true"
+        engine = create_engine(url, connect_args={'auth_token': turso_token})
         Base.metadata.create_all(engine)
         return engine
 

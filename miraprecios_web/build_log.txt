@@ -1,0 +1,1 @@
+bash: línea 1: docker: orden no encontrada

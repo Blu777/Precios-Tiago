@@ -16,8 +16,6 @@ const SUPERMERCADOS = new Map([
   ['carrefour', { nombre: 'Carrefour', logo: 'https://www.carrefour.com.ar/favicon.ico', colorText: 'text-blue-500', bg: 'bg-blue-50' }],
   // Coto
   ['coto', { nombre: 'Coto', logo: 'https://www.coto.com.ar/favicon.ico', colorText: 'text-orange-700', bg: 'bg-orange-50' }],
-  // La Anónima
-  ['la_anonima', { nombre: 'La Anónima', logo: 'https://www.laanonima.com.ar/favicon.ico', colorText: 'text-teal-700', bg: 'bg-teal-50' }],
 ]);
 
 const TEXTOS = {
@@ -117,16 +115,22 @@ export default function ProductCard({ producto }) {
                   </div>
                 )}
                 
-                {/* Precio y Supermercado */}
+                {/* Precio y Supermercados */}
                 <div className="flex items-center gap-2">
                   <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 tracking-tight">
                     {formatearPrecio(lowestPrice)}
                   </span>
-                  {cheapestSup && cheapestSup.logo && (
-                    <div className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white shadow-sm border border-gray-100 p-0.5 overflow-hidden flex-shrink-0" title={`Encontrado en ${cheapestSup.nombre}`}>
-                       <img src={cheapestSup.logo} alt={cheapestSup.nombre} className="w-full h-full object-contain" />
-                    </div>
-                  )}
+                  <div className="flex items-center -space-x-1 sm:-space-x-2">
+                    {validPrices.map((branch, idx) => {
+                      const sup = SUPERMERCADOS.get(branch.id);
+                      if (!sup || !sup.logo) return null;
+                      return (
+                        <div key={branch.id} className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white shadow-sm border border-gray-200 p-0.5 overflow-hidden flex-shrink-0 relative z-10 hover:z-20 hover:scale-110 transition-transform" title={`Encontrado en ${sup.nombre} a ${formatearPrecio(branch.precio)}`}>
+                           <img src={sup.logo} alt={sup.nombre} className="w-full h-full object-contain" />
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             ) : (

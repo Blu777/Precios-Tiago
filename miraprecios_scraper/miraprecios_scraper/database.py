@@ -18,6 +18,7 @@ class ProductoMaestro(Base):
     unidad_medida = Column(String, nullable=True)
     categoria_id = Column(String, nullable=True)
     url_imagen = Column(String, nullable=True)
+    grupo_id = Column(String, nullable=True)
 
 class SucursalPrecio(Base):
     __tablename__ = 'SucursalPrecio'

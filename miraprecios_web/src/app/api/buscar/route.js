@@ -1,6 +1,8 @@
 import { prisma } from '../../../lib/prisma';
 
 export const dynamic = 'force-dynamic';
+// Although we want caching, we use cache-control headers directly on the response 
+// rather than relying on route segment configs which might conflict with prisma connections.
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
@@ -11,7 +13,7 @@ export async function GET(request) {
         return Response.json({ page: 1, results: [] });
     }
 
-    const searchQuery = query.trim().toUpperCase(); // Uppercase porque SEPA normaliza en MAYÚSCULAS
+    const searchQuery = query.trim().toUpperCase();
 
     try {
         const productos = await prisma.productoMaestro.findMany({
@@ -24,109 +26,60 @@ export async function GET(request) {
             include: {
                 precios_sucursales: {
                     where: {
-                        disponible_online: true,   // Filtrar no disponibles
-                        precio_actual: { gt: 10 }   // Filtrar precios inválidos fantasma (<= 10 pesos)
+                        disponible_online: true,
+                        precio_actual: { gt: 10 }
                     },
                     orderBy: { precio_actual: 'asc' }
                 }
             },
-            take: Math.max(300, page * 24 + 100) // Extraer suficientes para agrupar antes de paginar
+            take: Math.max(300, page * 24 + 100)
         });
-
-        // --- Inicio Algoritmo de Agrupación (Fuzzy Clustering) ---
-        const MUST_MATCH_WORDS = new Set(['ZERO', 'LIGHT', 'AZUCAR', 'LIVIANO', 'DIET', 'DESCREMADA', 'ENTERA', 'CLASICA']);
-
-        const tokenize = (name) => {
-            let s = name.toUpperCase().replace(/[,.-]/g, ' '); 
-            s = s.replace(/\bLTS\b/g, 'L').replace(/\bLT\b/g, 'L').replace(/\bCM3\b/g, 'CC').replace(/\bML\b/g, 'CC');
-            s = s.replace(/\b2\s*25\s*L\b/g, '2250 CC');
-            s = s.replace(/\b1\s*5\s*L\b/g, '1500 CC');
-            s = s.replace(/\b1\s*75\s*L\b/g, '1750 CC');
-            s = s.replace(/\b2\s*5\s*L\b/g, '2500 CC');
-            s = s.replace(/\b3\s*L\b/g, '3000 CC');
-            const words = s.split(/\s+/).filter(w => w.length > 2 || /\d/.test(w));
-            return new Set(words);
-        };
-
-        const calculateSimilarity = (set1, set2) => {
-            for (const w of MUST_MATCH_WORDS) {
-                if (set1.has(w) !== set2.has(w)) return 0;
-            }
-            
-            const nums1 = Array.from(set1).filter(w => /^\d+$/.test(w));
-            const nums2 = Array.from(set2).filter(w => /^\d+$/.test(w));
-            if (nums1.length > 0 && nums2.length > 0) {
-                const sorted1 = nums1.sort().join(',');
-                const sorted2 = nums2.sort().join(',');
-                if (sorted1 !== sorted2) return 0;
-            }
-
-            let intersection = 0;
-            for (let word of set1) {
-                if (set2.has(word)) intersection++;
-            }
-            const union = set1.size + set2.size - intersection;
-            return union === 0 ? 0 : intersection / union;
-        };
-
-        const groupedProducts = [];
 
         const productosValidos = productos.filter(prod => prod.precios_sucursales.length > 0);
 
-        for (const prod of productosValidos) {
-            const prodTokens = tokenize(prod.nombre_estandarizado);
-            let merged = false;
+        // Agrupar por grupo_id o ean (si no tiene grupo)
+        const groupsMap = new Map();
 
-            for (const group of groupedProducts) {
-                const sim = calculateSimilarity(prodTokens, group.tokens);
+        for (const prod of productosValidos) {
+            const key = prod.grupo_id || prod.ean;
+            const existingGroup = groupsMap.get(key);
+
+            if (!existingGroup) {
+                groupsMap.set(key, {
+                    ...prod,
+                    precios_sucursales: [...prod.precios_sucursales]
+                });
+            } else {
+                // Fusionar sucursales
+                existingGroup.precios_sucursales = [...existingGroup.precios_sucursales, ...prod.precios_sucursales];
                 
-                // Umbral de 0.50 con las restricciones numéricas funciona perfecto
-                if (sim >= 0.50) {
-                    // Fusionar sucursales
-                    group.precios_sucursales = [...group.precios_sucursales, ...prod.precios_sucursales];
-                    
-                    // Deduplicar sucursales por supermercado
-                    const uniqueSucursales = new Map();
-                    for (const s of group.precios_sucursales) {
-                        const existing = uniqueSucursales.get(s.supermercado_id);
-                        
-                        if (!existing) {
+                // Deduplicar sucursales por supermercado
+                const uniqueSucursales = new Map();
+                for (const s of existingGroup.precios_sucursales) {
+                    const existing = uniqueSucursales.get(s.supermercado_id);
+                    if (!existing) {
+                        uniqueSucursales.set(s.supermercado_id, s);
+                    } else {
+                        if (s.product_url && !existing.product_url) {
                             uniqueSucursales.set(s.supermercado_id, s);
-                        } else {
-                            // Si el nuevo tiene URL y el existente NO, priorizar el que tiene URL (online > físico SEPA)
-                            if (s.product_url && !existing.product_url) {
-                                uniqueSucursales.set(s.supermercado_id, s);
-                            } 
-                            // Si el existente tiene URL y el nuevo NO, mantener el existente
-                            else if (!s.product_url && existing.product_url) {
-                                continue;
-                            } 
-                            // Si ambos tienen o ambos no tienen, quedarnos con el de menor precio
-                            else if (s.precio_actual < existing.precio_actual) {
-                                uniqueSucursales.set(s.supermercado_id, s);
-                            }
+                        } else if (!s.product_url && existing.product_url) {
+                            continue;
+                        } else if (s.precio_actual < existing.precio_actual) {
+                            uniqueSucursales.set(s.supermercado_id, s);
                         }
                     }
-                    group.precios_sucursales = Array.from(uniqueSucursales.values());
-                    
-                    // Ordenar de menor a mayor
-                    group.precios_sucursales.sort((a, b) => a.precio_actual - b.precio_actual);
-                    
-                    merged = true;
-                    break;
+                }
+                existingGroup.precios_sucursales = Array.from(uniqueSucursales.values());
+                existingGroup.precios_sucursales.sort((a, b) => a.precio_actual - b.precio_actual);
+                
+                if (prod.url_imagen && !existingGroup.url_imagen) {
+                    existingGroup.url_imagen = prod.url_imagen;
                 }
             }
-
-            if (!merged) {
-                groupedProducts.push({
-                    ...prod,
-                    tokens: prodTokens
-                });
-            }
         }
-        // --- Fin Algoritmo de Agrupación ---
 
-        // Armar estructura final, paginando LOS RESULTADOS AGRUPADOS
+        const groupedProducts = Array.from(groupsMap.values());
+
         const startIndex = (page - 1) * 24;
         const endIndex = startIndex + 24;
         
@@ -156,6 +109,10 @@ export async function GET(request) {
         return Response.json({
             page,
             results: finalResults
+        }, {
+            headers: {
+                'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+            },
         });
 
     } catch (error) {

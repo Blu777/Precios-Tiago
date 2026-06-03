@@ -19,11 +19,13 @@ model ProductoMaestro {
   unidad_medida        String?
   categoria_id         String?
   url_imagen           String?
+  grupo_id             String?          // Añadido para clustering pre-calculado
   
   precios_sucursales   SucursalPrecio[]
 
   @@index([nombre_estandarizado])
   @@index([marca])
+  @@index([grupo_id])
 }
 
 model SucursalPrecio {

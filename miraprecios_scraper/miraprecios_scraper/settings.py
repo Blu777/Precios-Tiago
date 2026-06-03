@@ -41,8 +41,12 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configuración del Custom Retry
 RETRY_ENABLED = True
-RETRY_TIMES = 4
+RETRY_TIMES = 10
 RETRY_HTTP_CODES = [403, 429, 500, 502, 503, 504]
+# Exponential backoff parameters
+RETRY_PRIORITY_ADJUST = -1
+DOWNLOAD_DELAY = 1.5
+RANDOMIZE_DOWNLOAD_DELAY = True
 
 
 # -----------------------------------------------------------------------------

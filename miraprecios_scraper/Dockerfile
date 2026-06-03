@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM public.ecr.aws/docker/library/python:3.11-slim
 
 # Evitar que Python genere archivos .pyc y forzar stdout en tiempo real
 ENV PYTHONDONTWRITEBYTECODE=1

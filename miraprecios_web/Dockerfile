@@ -1,7 +1,7 @@
 # ----------------------------------------
 # Fase 1: Dependencias (deps)
 # ----------------------------------------
-FROM public.ecr.aws/docker/library/node:18-alpine AS deps
+FROM public.ecr.aws/docker/library/node:18-alpine3.19 AS deps
 # libc6-compat asegura compatibilidad de ciertos binarios nativos (como process.dlopen) en Alpine Linux
 RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
@@ -15,7 +15,7 @@ RUN npm install
 # ----------------------------------------
 # Fase 2: Construcción (builder)
 # ----------------------------------------
-FROM public.ecr.aws/docker/library/node:18-alpine AS builder
+FROM public.ecr.aws/docker/library/node:18-alpine3.19 AS builder
 RUN apk add --no-cache openssl
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -36,7 +36,7 @@ RUN npm run build
 # ----------------------------------------
 # Fase 3: Entorno de Ejecución (runner)
 # ----------------------------------------
-FROM public.ecr.aws/docker/library/node:18-alpine AS runner
+FROM public.ecr.aws/docker/library/node:18-alpine3.19 AS runner
 WORKDIR /app
 
 ENV NODE_ENV production

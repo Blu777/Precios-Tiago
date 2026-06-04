@@ -5,17 +5,17 @@ import { useCart } from '../context/CartContext';
 
 const SUPERMERCADOS = new Map([
   // Grupo Cencosud
-  ['jumbo', { nombre: 'Jumbo', logo: 'https://jumbo.vtexassets.com/assets/vtex.file-manager-graphql/images/a570cbf0-eab9-42b4-8ab3-772c68e0d42d___54d898c69818b2b7ea00840c885bbd1f.png', colorText: 'text-green-700', bg: 'bg-green-50' }],
-  ['disco', { nombre: 'Disco', logo: 'https://discovirtual.com.ar/favicon.ico', colorText: 'text-purple-700', bg: 'bg-purple-50' }],
-  ['vea', { nombre: 'Vea', logo: 'https://veaargentina.vtexassets.com/assets/vtex.file-manager-graphql/images/ebec6476-cda1-4a92-9a57-b0b30be347cd___9dfde8be91a13e2dfb9ff23db12ba11a.png', colorText: 'text-blue-600', bg: 'bg-blue-50' }],
+  ['jumbo', { nombre: 'Jumbo', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.jumbo.com.ar&size=128', colorText: 'text-green-700', bg: 'bg-green-50' }],
+  ['disco', { nombre: 'Disco', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.disco.com.ar&size=128', colorText: 'text-purple-700', bg: 'bg-purple-50' }],
+  ['vea', { nombre: 'Vea', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.vea.com.ar&size=128', colorText: 'text-blue-600', bg: 'bg-blue-50' }],
   // ChangoMás
-  ['changomas', { nombre: 'ChangoMás', logo: 'https://changomas.com.ar/favicon.ico', colorText: 'text-yellow-600', bg: 'bg-yellow-50' }],
+  ['changomas', { nombre: 'ChangoMás', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.masonline.com.ar&size=128', colorText: 'text-yellow-600', bg: 'bg-yellow-50' }],
   // Supermercados Día
-  ['dia', { nombre: 'Día', logo: 'https://cdn.icon-icons.com/icons2/2699/PNG/512/dia_supermercado_logo_icon_170701.png', colorText: 'text-red-600', bg: 'bg-red-50' }],
+  ['dia', { nombre: 'Día', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://diaonline.com.ar&size=128', colorText: 'text-red-600', bg: 'bg-red-50' }],
   // Carrefour
-  ['carrefour', { nombre: 'Carrefour', logo: 'https://www.carrefour.com.ar/favicon.ico', colorText: 'text-blue-500', bg: 'bg-blue-50' }],
+  ['carrefour', { nombre: 'Carrefour', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.carrefour.com.ar&size=128', colorText: 'text-blue-500', bg: 'bg-blue-50' }],
   // Coto
-  ['coto', { nombre: 'Coto', logo: 'https://www.coto.com.ar/favicon.ico', colorText: 'text-orange-700', bg: 'bg-orange-50' }],
+  ['coto', { nombre: 'Coto', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.coto.com.ar&size=128', colorText: 'text-orange-700', bg: 'bg-orange-50' }],
 ]);
 
 const TEXTOS = {

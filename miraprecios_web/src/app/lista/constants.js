@@ -1,18 +1,18 @@
 export const SUPERMERCADOS = {
   // Grupo Cencosud
-  jumbo: { id: 'jumbo', nombre: 'Jumbo', colorBg: 'bg-green-600', colorText: 'text-green-700', badge: 'bg-green-100 text-green-700', logo: 'https://jumbo.vtexassets.com/assets/vtex.file-manager-graphql/images/a570cbf0-eab9-42b4-8ab3-772c68e0d42d___54d898c69818b2b7ea00840c885bbd1f.png' },
-  disco: { id: 'disco', nombre: 'Disco', colorBg: 'bg-purple-600', colorText: 'text-purple-700', badge: 'bg-purple-100 text-purple-700', logo: 'https://discovirtual.com.ar/favicon.ico' },
-  vea: { id: 'vea', nombre: 'Vea', colorBg: 'bg-blue-600', colorText: 'text-blue-600', badge: 'bg-blue-100 text-blue-700', logo: 'https://veaargentina.vtexassets.com/assets/vtex.file-manager-graphql/images/ebec6476-cda1-4a92-9a57-b0b30be347cd___9dfde8be91a13e2dfb9ff23db12ba11a.png' },
+  jumbo: { id: 'jumbo', nombre: 'Jumbo', colorBg: 'bg-green-600', colorText: 'text-green-700', badge: 'bg-green-100 text-green-700', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.jumbo.com.ar&size=128' },
+  disco: { id: 'disco', nombre: 'Disco', colorBg: 'bg-purple-600', colorText: 'text-purple-700', badge: 'bg-purple-100 text-purple-700', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.disco.com.ar&size=128' },
+  vea: { id: 'vea', nombre: 'Vea', colorBg: 'bg-blue-600', colorText: 'text-blue-600', badge: 'bg-blue-100 text-blue-700', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.vea.com.ar&size=128' },
   // ChangoMás
-  changomas: { id: 'changomas', nombre: 'ChangoMás', colorBg: 'bg-yellow-500', colorText: 'text-yellow-600', badge: 'bg-yellow-100 text-yellow-700', logo: 'https://changomas.com.ar/favicon.ico' },
+  changomas: { id: 'changomas', nombre: 'ChangoMás', colorBg: 'bg-yellow-500', colorText: 'text-yellow-600', badge: 'bg-yellow-100 text-yellow-700', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.masonline.com.ar&size=128' },
   // Supermercados Día
-  dia: { id: 'dia', nombre: 'Día', colorBg: 'bg-red-500', colorText: 'text-red-600', badge: 'bg-red-100 text-red-700', logo: 'https://cdn.icon-icons.com/icons2/2699/PNG/512/dia_supermercado_logo_icon_170701.png' },
+  dia: { id: 'dia', nombre: 'Día', colorBg: 'bg-red-500', colorText: 'text-red-600', badge: 'bg-red-100 text-red-700', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://diaonline.com.ar&size=128' },
   // Carrefour (todos los formatos)
-  carrefour: { id: 'carrefour', nombre: 'Carrefour', colorBg: 'bg-blue-500', colorText: 'text-blue-600', badge: 'bg-blue-100 text-blue-700', logo: 'https://www.carrefour.com.ar/favicon.ico' },
-  carrefour_express: { id: 'carrefour_express', nombre: 'Carrefour Express', colorBg: 'bg-sky-500', colorText: 'text-sky-600', badge: 'bg-sky-100 text-sky-700', logo: 'https://www.carrefour.com.ar/favicon.ico' },
-  carrefour_maxi: { id: 'carrefour_maxi', nombre: 'Carrefour Maxi', colorBg: 'bg-indigo-600', colorText: 'text-indigo-700', badge: 'bg-indigo-100 text-indigo-700', logo: 'https://www.carrefour.com.ar/favicon.ico' },
+  carrefour: { id: 'carrefour', nombre: 'Carrefour', colorBg: 'bg-blue-500', colorText: 'text-blue-600', badge: 'bg-blue-100 text-blue-700', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.carrefour.com.ar&size=128' },
+  carrefour_express: { id: 'carrefour_express', nombre: 'Carrefour Express', colorBg: 'bg-sky-500', colorText: 'text-sky-600', badge: 'bg-sky-100 text-sky-700', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.carrefour.com.ar&size=128' },
+  carrefour_maxi: { id: 'carrefour_maxi', nombre: 'Carrefour Maxi', colorBg: 'bg-indigo-600', colorText: 'text-indigo-700', badge: 'bg-indigo-100 text-indigo-700', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.carrefour.com.ar&size=128' },
   // Coto
-  coto: { id: 'coto', nombre: 'Coto', colorBg: 'bg-orange-600', colorText: 'text-orange-700', badge: 'bg-orange-100 text-orange-700', logo: 'https://www.coto.com.ar/favicon.ico' },
+  coto: { id: 'coto', nombre: 'Coto', colorBg: 'bg-orange-600', colorText: 'text-orange-700', badge: 'bg-orange-100 text-orange-700', logo: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://www.coto.com.ar&size=128' },
 };
 
 export const MAPA_ESTILOS = {

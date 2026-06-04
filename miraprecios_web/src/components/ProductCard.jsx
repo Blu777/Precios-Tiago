@@ -72,12 +72,12 @@ export default function ProductCard({ producto }) {
 
   return (
     <>
-      <div className="group relative flex flex-row sm:flex-col bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all p-2 sm:p-3 gap-2 sm:gap-3 w-full">
+      <div className="group relative flex flex-row sm:flex-col bg-white/90 backdrop-blur-sm rounded-2xl shadow-sm border border-white/60 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.15)] hover:-translate-y-1 transition-all duration-300 ease-out p-2 sm:p-3 gap-2 sm:gap-3 w-full">
 
         {/* Imagen */}
         <div
           onClick={() => setShowModal(true)}
-          className="w-20 h-20 sm:w-full sm:h-36 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center relative p-1 sm:p-2 cursor-pointer"
+          className="w-20 h-20 sm:w-full sm:h-36 flex-shrink-0 bg-white/50 backdrop-blur-sm rounded-xl overflow-hidden flex items-center justify-center relative p-1 sm:p-2 cursor-pointer"
         >
           {producto.image_url && !imageError ? (
             <Image
@@ -128,16 +128,12 @@ export default function ProductCard({ producto }) {
                   <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 tracking-tight">
                     {formatearPrecio(lowestPrice)}
                   </span>
-                  <div className="flex items-center -space-x-1 sm:-space-x-2">
-                    {validPrices.map((branch, idx) => {
-                      const sup = SUPERMERCADOS.get(branch.id);
-                      if (!sup || !sup.logo) return null;
-                      return (
-                        <div key={branch.id} className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white shadow-sm border border-gray-200 p-0.5 overflow-hidden flex-shrink-0 relative z-10 hover:z-20 hover:scale-110 transition-transform" title={`Encontrado en ${sup.nombre} a ${formatearPrecio(branch.precio)}`}>
-                           <img src={sup.logo} alt={sup.nombre} className="w-full h-full object-contain" />
-                        </div>
-                      );
-                    })}
+                  <div className="flex items-center">
+                    {cheapestSup && cheapestSup.logo && (
+                      <div className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white shadow-sm border border-gray-200 p-0.5 overflow-hidden flex-shrink-0 relative hover:scale-110 transition-transform" title={`El más barato en ${cheapestSup.nombre}`}>
+                         <img src={cheapestSup.logo} alt={cheapestSup.nombre} className="w-full h-full object-contain" />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

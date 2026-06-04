@@ -88,7 +88,7 @@ export default function SearchClient() {
         <div className="relative w-full max-w-2xl mx-auto mb-6">
           <input
             type="text"
-            className="w-full px-6 py-4 rounded-full border-2 border-gray-200 shadow-sm focus:outline-none focus:border-blue-500 text-lg transition-colors"
+            className="w-full px-6 py-4 rounded-full border-0 shadow-[0_8px_30px_rgb(0,0,0,0.08)] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:shadow-[0_8px_30px_rgba(16,185,129,0.2)] text-lg transition-all duration-300 bg-white/95 backdrop-blur-md placeholder:text-gray-400 text-gray-800"
             placeholder="Buscar producto (ej. 'Aceite Girasol', 'Marolio')..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}

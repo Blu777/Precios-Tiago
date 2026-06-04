@@ -122,13 +122,15 @@ class SQLitePipeline:
                 marca=item.get('brand'),
                 contenido_neto=float(item.get('net_content')) if item.get('net_content') is not None else 0.0,
                 unidad_medida=item.get('unit'),
+                categoria_id=item.get('categoria_id'),
             )
             
             on_conflict_maestro = stmt_maestro.on_conflict_do_update(
                 index_elements=['ean'],
                 set_={
                     'nombre_estandarizado': stmt_maestro.excluded.nombre_estandarizado,
-                    'marca': stmt_maestro.excluded.marca
+                    'marca': stmt_maestro.excluded.marca,
+                    'categoria_id': stmt_maestro.excluded.categoria_id
                 }
             )
             

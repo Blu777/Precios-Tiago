@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ProductCard from './ProductCard'; // Componente de presentación
+import ProductCard from './ProductCard';
+import CategoryNav from './CategoryNav';
 
 const TEXTOS = {
   noEncontramos: 'No encontramos',
   sugerencia: 'Asegurate de escribir bien la marca o intentá buscar algo más genérico.',
-  errorConexion: 'Ocurrió un error al conectar con la base de datos.'
+  errorConexion: 'Ocurrió un error al conectar con la base de datos.',
+  sinResultadosCat: 'No hay productos en esta categoría.'
 };
 
 const SkeletonCard = () => (
@@ -21,13 +23,14 @@ const SkeletonCard = () => (
 
 export default function SearchClient() {
   const [query, setQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Todo el cálculo pesado (deduplicación, joins, ordenamiento) ahora ocurre en el servidor
   useEffect(() => {
-    if (query.trim().length < 3) {
+    if (query.trim().length < 3 && !selectedCategory) {
       setResults([]);
       setError(null);
       return;
@@ -40,7 +43,15 @@ export default function SearchClient() {
       setError(null);
       
       try {
-        const response = await fetch(`/api/buscar?q=${encodeURIComponent(query)}&page=1`, {
+        let url = `/api/buscar?page=1`;
+        if (query.trim().length >= 3) {
+            url += `&q=${encodeURIComponent(query)}`;
+        }
+        if (selectedCategory) {
+            url += `&categoria=${encodeURIComponent(selectedCategory)}`;
+        }
+        
+        const response = await fetch(url, {
           signal: controller.signal
         });
         
@@ -61,7 +72,6 @@ export default function SearchClient() {
       }
     };
 
-    // Debounce para evitar inundar la API mientras el usuario tipea
     const delayDebounceFn = setTimeout(() => {
       fetchSearchResults();
     }, 350);
@@ -70,12 +80,12 @@ export default function SearchClient() {
       clearTimeout(delayDebounceFn);
       controller.abort();
     };
-  }, [query]);
+  }, [query, selectedCategory]);
 
   return (
     <>
       <div className="max-w-4xl mx-auto text-center mb-10">
-        <div className="relative w-full max-w-2xl mx-auto">
+        <div className="relative w-full max-w-2xl mx-auto mb-6">
           <input
             type="text"
             className="w-full px-6 py-4 rounded-full border-2 border-gray-200 shadow-sm focus:outline-none focus:border-blue-500 text-lg transition-colors"
@@ -90,6 +100,7 @@ export default function SearchClient() {
             </div>
           )}
         </div>
+        <CategoryNav selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
       </div>
 
       {/* Manejo de Errores Limpio */}
@@ -110,9 +121,9 @@ export default function SearchClient() {
       </main>
 
       {/* Estado Vacío / Sin Resultados */}
-      {query.trim().length >= 3 && !loading && !error && results.length === 0 && (
+      {((query.trim().length >= 3) || selectedCategory) && !loading && !error && results.length === 0 && (
         <div className="text-center mt-12 bg-white max-w-lg mx-auto p-8 rounded-2xl shadow-sm border border-gray-100">
-          <p className="text-gray-600 text-lg font-medium mb-2">{TEXTOS.noEncontramos} "{query}".</p>
+          <p className="text-gray-600 text-lg font-medium mb-2">{TEXTOS.noEncontramos} {query ? `"${query}"` : 'en esta categoría'}.</p>
           <p className="text-gray-400 text-sm">{TEXTOS.sugerencia}</p>
         </div>
       )}

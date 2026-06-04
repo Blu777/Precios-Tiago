@@ -6,28 +6,37 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get('q');
+    const query = searchParams.get('q') || '';
+    const categoria = searchParams.get('categoria');
     const page = parseInt(searchParams.get('page')) || 1;
 
-    if (!query || query.length < 3) {
+    if ((!query || query.length < 3) && !categoria) {
         return Response.json({ page: 1, results: [] });
     }
 
-    const searchQuery = query.trim().toUpperCase();
-    const searchTerms = searchQuery.split(/\s+/).filter(w => w.length > 0);
-    
-    const andConditions = searchTerms.map(term => ({
-        nombre_estandarizado: { contains: term }
-    }));
+    const whereClause = {};
+
+    if (query && query.length >= 3) {
+        const searchQuery = query.trim().toUpperCase();
+        const searchTerms = searchQuery.split(/\s+/).filter(w => w.length > 0);
+        
+        const andConditions = searchTerms.map(term => ({
+            nombre_estandarizado: { contains: term }
+        }));
+        
+        whereClause.OR = [
+            { AND: andConditions },
+            { marca: { contains: searchQuery } }
+        ];
+    }
+
+    if (categoria) {
+        whereClause.categoria_id = categoria;
+    }
 
     try {
         const productos = await prisma.productoMaestro.findMany({
-            where: {
-                OR: [
-                    { AND: andConditions },
-                    { marca: { contains: searchQuery } }
-                ]
-            },
+            where: whereClause,
             include: {
                 precios_sucursales: {
                     where: {

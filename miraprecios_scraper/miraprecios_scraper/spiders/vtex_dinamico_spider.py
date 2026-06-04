@@ -236,6 +236,10 @@ class VtexDinamicoSpider(scrapy.Spider):
                 link_text = product.get('linkText')
                 url_producto = f"{self.base_url}/{link_text}/p" if link_text else response.url
 
+            path_subcategoria = response.meta.get('path_subcategoria', '')
+            segments = [s for s in path_subcategoria.split('/') if s]
+            categoria_id = segments[0].lower().replace('-', ' ') if segments else None
+
             yield {
                 'sku': sku_id,
                 'barcode': barcode,   # FIX 1.A: EAN real (o None si no lo expone la tienda)
@@ -245,6 +249,7 @@ class VtexDinamicoSpider(scrapy.Spider):
                 'precio_lista': float(precio_lista) if precio_lista is not None else None,
                 'image_url': url_imagen,
                 'product_url': url_producto,
+                'categoria_id': categoria_id,
                 'timestamp': datetime.utcnow().isoformat(),
                 'supermarket': self.supermercado_name
             }

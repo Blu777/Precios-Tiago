@@ -7,7 +7,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - shared_data:/app/data:ro
+      - shared_data:/app/data
     environment:
       - DATABASE_URL=file:///app/data/miraprecios.db
       - TZ=America/Argentina/Buenos_Aires

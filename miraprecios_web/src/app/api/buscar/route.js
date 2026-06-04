@@ -46,7 +46,8 @@ export async function GET(request) {
         const groupsMap = new Map();
 
         for (const prod of productosValidos) {
-            const key = prod.grupo_id || prod.ean;
+            const normalizedEan = prod.ean ? prod.ean.replace(/^0+/, '') : null;
+            const key = prod.grupo_id || normalizedEan;
             const existingGroup = groupsMap.get(key);
 
             if (!existingGroup) {

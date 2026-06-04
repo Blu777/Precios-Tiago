@@ -1,9 +1,9 @@
 # ----------------------------------------
 # Fase 1: Dependencias (deps)
 # ----------------------------------------
-FROM public.ecr.aws/docker/library/node:18-alpine3.19 AS deps
-# libc6-compat asegura compatibilidad de ciertos binarios nativos (como process.dlopen) en Alpine Linux
-RUN apk add --no-cache libc6-compat openssl
+FROM public.ecr.aws/docker/library/node:18-slim AS deps
+# libc6-compat no es necesario en Debian, pero instalamos openssl y certificados
+RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # Copiamos los archivos de manifiesto de npm
@@ -15,15 +15,15 @@ RUN npm install
 # ----------------------------------------
 # Fase 2: Construcción (builder)
 # ----------------------------------------
-FROM public.ecr.aws/docker/library/node:18-alpine3.19 AS builder
-RUN apk add --no-cache openssl
+FROM public.ecr.aws/docker/library/node:18-slim AS builder
+RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Desactivar la telemetría de Next.js por privacidad y velocidad
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV DATABASE_URL "file:///app/data/miraprecios.db"
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV DATABASE_URL="file:///app/data/miraprecios.db"
 
 # Generar cliente de Prisma para SQLite
 RUN npx prisma generate
@@ -36,15 +36,15 @@ RUN npm run build
 # ----------------------------------------
 # Fase 3: Entorno de Ejecución (runner)
 # ----------------------------------------
-FROM public.ecr.aws/docker/library/node:18-alpine3.19 AS runner
+FROM public.ecr.aws/docker/library/node:18-slim AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV DATABASE_URL "file:///app/data/miraprecios.db"
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV DATABASE_URL="file:///app/data/miraprecios.db"
 
 # Instalar openssl requerido por el motor de Prisma
-RUN apk add --no-cache openssl
+RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Crear el directorio para montar el volumen de datos (correrá como root)
 RUN mkdir -p data/products
@@ -66,7 +66,7 @@ RUN chown -R node:node /app
 
 USER node
 EXPOSE 3000
-ENV PORT 3000
+ENV PORT=3000
 
 # Standalone mode inyecta un server.js nativo súper eficiente en node
 CMD ["node", "server.js"]

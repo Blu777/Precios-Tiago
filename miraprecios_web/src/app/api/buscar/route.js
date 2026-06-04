@@ -14,12 +14,17 @@ export async function GET(request) {
     }
 
     const searchQuery = query.trim().toUpperCase();
+    const searchTerms = searchQuery.split(/\s+/).filter(w => w.length > 0);
+    
+    const andConditions = searchTerms.map(term => ({
+        nombre_estandarizado: { contains: term }
+    }));
 
     try {
         const productos = await prisma.productoMaestro.findMany({
             where: {
                 OR: [
-                    { nombre_estandarizado: { contains: searchQuery } },
+                    { AND: andConditions },
                     { marca: { contains: searchQuery } }
                 ]
             },

@@ -59,8 +59,16 @@ export default function ProductCard({ producto }) {
   const cheapestBranch = validPrices.length > 0 ? validPrices[0] : null;
   const cheapestSup = cheapestBranch ? (SUPERMERCADOS.get(cheapestBranch.id) || { nombre: cheapestBranch.id }) : null;
 
-  const hasDiscount = cheapestBranch && cheapestBranch.precioLista && cheapestBranch.precioLista > cheapestBranch.precio;
-  const discountPercent = hasDiscount ? Math.round((1 - (cheapestBranch.precio / cheapestBranch.precioLista)) * 100) : 0;
+  let discountPercent = 0;
+  let hasDiscount = false;
+
+  if (cheapestBranch && cheapestBranch.precioLista && cheapestBranch.precioLista > cheapestBranch.precio) {
+    discountPercent = Math.round((1 - (cheapestBranch.precio / cheapestBranch.precioLista)) * 100);
+    // Sanity check: ignorar descuentos absurdos (errores de data de la fuente)
+    if (discountPercent <= 80) {
+      hasDiscount = true;
+    }
+  }
 
   return (
     <>

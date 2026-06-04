@@ -23,8 +23,6 @@ services:
       - PGID=${PGID:-1000}
       - TZ=America/Argentina/Buenos_Aires
       - DB_PATH=/app/data/miraprecios.db
-      - TURSO_DATABASE_URL=${TURSO_DATABASE_URL:-}
-      - TURSO_AUTH_TOKEN=${TURSO_AUTH_TOKEN:-}
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
     restart: unless-stopped
 

@@ -36,6 +36,9 @@ services:
     environment:
       # Para que los timestamps de guardado reflejen el horario argentino
       - TZ=America/Argentina/Buenos_Aires
+      # UID/GID para permisos de TrueNAS
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
       # Credenciales de Turso (necesarias para guardar en la DB online)
       - TURSO_DATABASE_URL=${TURSO_DATABASE_URL}
       - TURSO_AUTH_TOKEN=${TURSO_AUTH_TOKEN}

@@ -16,7 +16,6 @@ services:
   scraper:
     image: ghcr.io/blu777/precios-tiago/miraprecios-scraper:latest
     container_name: miraprecios_scraper
-    user: "${PUID:-1000}:${PGID:-1000}"
     volumes:
       - shared_data:/app/data
     environment:

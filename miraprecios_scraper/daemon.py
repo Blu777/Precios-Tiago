@@ -48,15 +48,20 @@ def run_scraper_cycle(force=False):
     logger.info("===================================================")
     logger.info(f"[*] Iniciando ciclo de scraping para el día {datetime.now().strftime('%Y-%m-%d')}")
     
-    # Trabajar con base de datos temporal
-    os.environ['DB_PATH'] = TEMP_DB
+    usando_turso = bool(os.environ.get('TURSO_DATABASE_URL'))
     
-    # Opcional: copiar la BD existente si existe para no empezar desde cero (para mantener historial de precios)
-    if os.path.exists(FINAL_DB):
-        logger.info(f"[*] Copiando base de datos existente a temporal ({TEMP_DB})...")
-        shutil.copy2(FINAL_DB, TEMP_DB)
+    if usando_turso:
+        logger.info("[*] Modo Turso detectado. Se escribirá directamente a la nube y se omitirá la DB temporal.")
     else:
-        logger.info(f"[*] Iniciando con base de datos vacía ({TEMP_DB}).")
+        # Trabajar con base de datos temporal
+        os.environ['DB_PATH'] = TEMP_DB
+        
+        # Opcional: copiar la BD existente si existe para no empezar desde cero (para mantener historial de precios)
+        if os.path.exists(FINAL_DB):
+            logger.info(f"[*] Copiando base de datos existente a temporal ({TEMP_DB})...")
+            shutil.copy2(FINAL_DB, TEMP_DB)
+        else:
+            logger.info(f"[*] Iniciando con base de datos vacía ({TEMP_DB}).")
 
     logger.info("[*] Paso 1/3: Ingesta de dataset base oficial de SEPA...")
     
@@ -94,23 +99,48 @@ def run_scraper_cycle(force=False):
     except subprocess.CalledProcessError as e:
         logger.error(f"[!] Error ejecutando clusterizador (Código: {e.returncode})")
 
-    # Mover la BD temporal a producción
-    logger.info(f"[*] Reemplazando base de datos de producción atómicamente...")
-    try:
-        os.makedirs(os.path.dirname(FINAL_DB), exist_ok=True)
-        # Movemos la BD usando un nombre intermedio para atomicidad
-        shutil.copy2(TEMP_DB, FINAL_DB + ".tmp")
-        os.rename(FINAL_DB + ".tmp", FINAL_DB)
-        
-        # Mover también los archivos WAL si existen (importante para SQLite WAL mode)
-        for ext in ['-wal', '-shm']:
-            if os.path.exists(TEMP_DB + ext):
-                shutil.copy2(TEMP_DB + ext, FINAL_DB + ext + ".tmp")
-                os.rename(FINAL_DB + ext + ".tmp", FINAL_DB + ext)
+    if usando_turso:
+        logger.info("[✔] Extracción completada. Los datos fueron sincronizados a Turso directamente.")
+    else:
+        # Sincronizar la BD temporal a producción de forma atómica y compatible con Prisma (WAL)
+        logger.info(f"[*] Reemplazando base de datos de producción atómicamente...")
+        try:
+            os.makedirs(os.path.dirname(FINAL_DB), exist_ok=True)
+            
+            if not os.path.exists(FINAL_DB):
+                logger.info("[*] Creando base de datos final por primera vez...")
+                shutil.copy2(TEMP_DB, FINAL_DB)
+                # Asegurar permisos legibles
+                os.chmod(FINAL_DB, 0o666)
+            else:
+                import sqlite3
+                logger.info("[*] Sincronizando datos a producción atómicamente (WAL-friendly)...")
                 
-        logger.info("[✔] Base de datos de producción actualizada.")
-    except Exception as e:
-        logger.error(f"[!] Error al reemplazar BD de producción: {e}")
+                conn = sqlite3.connect(FINAL_DB, isolation_level=None)
+                try:
+                    conn.execute("PRAGMA journal_mode=WAL;")
+                    conn.execute("PRAGMA synchronous=NORMAL;")
+                    conn.execute("BEGIN EXCLUSIVE;")
+                    conn.execute(f"ATTACH DATABASE '{TEMP_DB}' AS temp_db;")
+                    
+                    # Sincronizamos las tablas, Next.js no pierde el File Descriptor
+                    conn.execute("DELETE FROM ProductoMaestro;")
+                    conn.execute("DELETE FROM SucursalPrecio;")
+                    
+                    conn.execute("INSERT INTO ProductoMaestro SELECT * FROM temp_db.ProductoMaestro;")
+                    conn.execute("INSERT INTO SucursalPrecio SELECT * FROM temp_db.SucursalPrecio;")
+                    
+                    conn.execute("COMMIT;")
+                    conn.execute("DETACH DATABASE temp_db;")
+                    logger.info("[✔] Base de datos de producción actualizada (Transacción completada).")
+                except Exception as e:
+                    logger.error(f"[!] Error durante la transacción SQLite: {e}")
+                    conn.execute("ROLLBACK;")
+                finally:
+                    conn.close()
+                    
+        except Exception as e:
+            logger.error(f"[!] Error crítico al reemplazar BD de producción: {e}")
 
     mark_run_today()
     logger.info("===================================================")

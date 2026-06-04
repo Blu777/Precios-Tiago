@@ -11,12 +11,15 @@ __pycache__/
 *.pyc
 
 # Carpetas de datos y bases de datos locales
+data/
 miraprecios_scraper/data/
 miraprecios_web/data/
 *.sqlite
 *.sqlite3
 *.db
 *.db-journal
+*.db-wal
+*.db-shm
 
 # Variables de entorno
 .env
@@ -28,5 +31,4 @@ Thumbs.db
 
 .vscode/
 
-docker-compose.truenas.yml
-README_TRUENAS.md
+scripts

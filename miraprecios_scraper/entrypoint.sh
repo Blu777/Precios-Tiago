@@ -22,9 +22,11 @@ if [ "$(id -u)" = "0" ]; then
     chown -R abc:abc /app
 
     echo "[*] Cambiando a usuario no root (abc)..."
+    umask 002
     exec gosu abc python daemon.py
 else
     # Si ya se nos pasó un usuario vía docker-compose, corremos directamente
     echo "[*] Ejecutando como usuario actual (UID=$(id -u))..."
+    umask 002
     exec python daemon.py
 fi

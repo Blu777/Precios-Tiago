@@ -42,12 +42,13 @@ export async function GET(request) {
 
         const productosValidos = productos.filter(prod => prod.precios_sucursales.length > 0);
 
-        // Agrupar por grupo_id o ean (si no tiene grupo)
+        // Agrupar por grupo_id o por nombre+marca para evitar duplicados por EANs distintos
         const groupsMap = new Map();
 
         for (const prod of productosValidos) {
             const normalizedEan = prod.ean ? prod.ean.replace(/^0+/, '') : null;
-            const key = prod.grupo_id || normalizedEan;
+            // Si el producto no tiene grupo_id, agrupamos por nombre_estandarizado + marca para juntar productos idénticos
+            const key = prod.grupo_id || (prod.nombre_estandarizado ? `${prod.nombre_estandarizado.trim()}-${(prod.marca || '').trim()}` : normalizedEan);
             const existingGroup = groupsMap.get(key);
 
             if (!existingGroup) {

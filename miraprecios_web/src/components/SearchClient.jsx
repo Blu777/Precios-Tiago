@@ -111,7 +111,7 @@ export default function SearchClient() {
       )}
 
       {/* Grilla Responsiva de Productos */}
-      <main className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-3 md:gap-4">
+      <main className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 md:gap-4">
         {loading 
           ? Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)
           : results.map((producto) => (

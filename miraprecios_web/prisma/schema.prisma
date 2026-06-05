@@ -34,6 +34,7 @@ model SucursalPrecio {
   supermercado_id      String
   precio_actual        Float
   precio_lista         Float?
+  promocion            String?
   disponible_online    Boolean         @default(true)
   url_imagen           String?
   product_url          String?

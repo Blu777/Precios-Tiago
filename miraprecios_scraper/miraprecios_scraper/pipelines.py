@@ -148,6 +148,7 @@ class SQLitePipeline:
                 supermercado_id=supermarket_id,
                 precio_actual=precio_actual,
                 precio_lista=float(item.get('precio_lista')) if item.get('precio_lista') is not None else float(precio_actual),
+                promocion=item.get('promocion'),
                 url_imagen=item.get('image_url'),
                 product_url=item.get('product_url'),
                 disponible_online=item.get('disponible_online', True)
@@ -158,6 +159,7 @@ class SQLitePipeline:
                 set_={
                     'precio_actual': stmt_precio.excluded.precio_actual,
                     'precio_lista': stmt_precio.excluded.precio_lista,
+                    'promocion': stmt_precio.excluded.promocion,
                     'url_imagen': stmt_precio.excluded.url_imagen,
                     'product_url': stmt_precio.excluded.product_url,
                     'disponible_online': stmt_precio.excluded.disponible_online,

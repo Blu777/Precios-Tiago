@@ -116,6 +116,7 @@ export async function GET(request) {
                         id: s.supermercado_id,
                         precio: s.precio_actual,
                         precioLista: s.precio_lista,
+                        promocion: s.promocion,
                         product_url: s.product_url,
                         updated_at: s.ultima_actualizacion
                     }))

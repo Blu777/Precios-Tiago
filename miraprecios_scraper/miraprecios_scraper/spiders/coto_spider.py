@@ -105,6 +105,9 @@ class CotoSpider(scrapy.Spider):
             # URL de producto genérica
             product_url = f"https://www.cotodigital.com.ar/sitios/cdigi/nuevositio/producto/{sku_id}"
             
+            # Intento de extraer texto de promoción (puede variar según la API)
+            promocion_text = data_field.get('promo_desc') or data_field.get('promocion') or data_field.get('discount_badge')
+
             yield {
                 'sku': sku_id,
                 'barcode': barcode,
@@ -112,6 +115,7 @@ class CotoSpider(scrapy.Spider):
                 'brand': brand,
                 'precio_actual': float(precio_actual) if precio_actual is not None else None,
                 'precio_lista': float(precio_lista) if precio_lista is not None else None,
+                'promocion': promocion_text,
                 'image_url': image_url,
                 'product_url': product_url,
                 'categoria_id': response.meta['group_id'],

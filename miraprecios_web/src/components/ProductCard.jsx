@@ -111,6 +111,14 @@ export default function ProductCard({ producto }) {
                 className="flex flex-col cursor-pointer hover:opacity-80 transition-opacity" 
                 onClick={() => setShowModal(true)}
               >
+                {/* Promoción si existe */}
+                {cheapestBranch?.promocion && (
+                  <div className="flex items-center mb-1">
+                    <span className="text-[10px] font-bold text-white bg-orange-500 px-2 py-0.5 rounded shadow-sm truncate">
+                      🔥 {cheapestBranch.promocion}
+                    </span>
+                  </div>
+                )}
                 {/* Descuento si existe */}
                 {hasDiscount && (
                   <div className="flex items-center gap-2 mb-0.5">
@@ -262,10 +270,16 @@ export default function ProductCard({ producto }) {
 
                       <div className="flex flex-col items-end">
                         {sucursalValida ? (
-                          <div className="flex items-center gap-2">
-                            <span className={`font-extrabold text-base ${isWinner ? 'text-emerald-700' : 'text-gray-900'}`}>
-                              {formatearPrecio(sucursalValida.precio)}
-                            </span>
+                          <div className="flex flex-col items-end gap-1">
+                            {sucursalValida.promocion && (
+                              <span className="text-[10px] font-bold text-white bg-orange-500 px-1.5 py-0.5 rounded shadow-sm">
+                                🔥 {sucursalValida.promocion}
+                              </span>
+                            )}
+                            <div className="flex items-center gap-2">
+                              <span className={`font-extrabold text-base ${isWinner ? 'text-emerald-700' : 'text-gray-900'}`}>
+                                {formatearPrecio(sucursalValida.precio)}
+                              </span>
                             {sucursalValida.product_url && (
                               <a
                                 href={sucursalValida.product_url}
@@ -279,6 +293,7 @@ export default function ProductCard({ producto }) {
                                 </svg>
                               </a>
                             )}
+                            </div>
                           </div>
                         ) : (
                           <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-1 rounded">

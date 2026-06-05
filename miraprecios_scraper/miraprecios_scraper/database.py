@@ -28,6 +28,7 @@ class SucursalPrecio(Base):
     supermercado_id = Column(String, nullable=False)
     precio_actual = Column(Float, nullable=False)
     precio_lista = Column(Float, nullable=True)
+    promocion = Column(String, nullable=True)
     disponible_online = Column(Boolean, default=True)
     url_imagen = Column(String, nullable=True)
     product_url = Column(String, nullable=True)

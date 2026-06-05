@@ -239,6 +239,17 @@ class VtexDinamicoSpider(scrapy.Spider):
             # Robustez extra: Si ListPrice no existe o es 0, solemos clonar el Price
             if not precio_lista or precio_lista == 0:
                 precio_lista = precio_actual
+                
+            promocion_text = None
+            teasers = active_seller.get('Teasers', [])
+            if teasers and len(teasers) > 0:
+                # Extraemos el primer teaser disponible (frecuentemente es "<name>2x1</name>")
+                # En algunas tiendas VTEX la estructura del teaser es {"<name>": "2x1", "id": "..."}
+                primer_teaser = teasers[0]
+                if '<name>' in primer_teaser:
+                    promocion_text = primer_teaser.get('<name>')
+                elif 'name' in primer_teaser:
+                    promocion_text = primer_teaser.get('name')
             
             url_producto = link
             if url_producto and not url_producto.startswith('http'):
@@ -258,6 +269,7 @@ class VtexDinamicoSpider(scrapy.Spider):
                 'brand': marca,
                 'precio_actual': float(precio_actual) if precio_actual is not None else None,
                 'precio_lista': float(precio_lista) if precio_lista is not None else None,
+                'promocion': promocion_text,
                 'image_url': url_imagen,
                 'product_url': url_producto,
                 'categoria_id': categoria_id,

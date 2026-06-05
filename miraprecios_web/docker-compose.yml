@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     image: ghcr.io/blu777/precios-tiago/miraprecios-web:latest
     container_name: miraprecios_web
+    user: "root"
     restart: always
     ports:
       - "9333:3000"

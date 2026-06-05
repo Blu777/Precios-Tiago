@@ -99,6 +99,7 @@ def run_scraper_cycle(force=False):
         else:
             logger.info(f"[*] Iniciando con base de datos vacía ({TEMP_DB}).")
             # Asegurar que el archivo exista para que shutil.copy2 no falle más adelante
+            os.makedirs(os.path.dirname(TEMP_DB), exist_ok=True)
             import sqlite3
             conn = sqlite3.connect(TEMP_DB)
             conn.close()

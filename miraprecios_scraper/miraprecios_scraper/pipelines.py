@@ -108,7 +108,25 @@ class SQLitePipeline:
             
             # Generar EAN sintético si no viene
             if not ean:
-                ean = self.generate_synthetic_ean(item.get('name'), item.get('brand'))
+                # Fallback: Buscar EAN real (no SYN-) en la BD para el mismo producto exacto
+                nombre_norm = item.get('name', '')
+                marca_norm = item.get('brand')
+                
+                query = self.session.query(ProductoMaestro.ean).filter(
+                    ProductoMaestro.nombre_estandarizado == nombre_norm,
+                    ProductoMaestro.ean.notlike('SYN-%')
+                )
+                if marca_norm:
+                    query = query.filter(ProductoMaestro.marca == marca_norm)
+                else:
+                    query = query.filter(ProductoMaestro.marca.is_(None))
+                
+                existing = query.first()
+                
+                if existing:
+                    ean = existing[0]
+                else:
+                    ean = self.generate_synthetic_ean(item.get('name'), item.get('brand'))
             else:
                 ean = str(ean).strip()
                 if ean.endswith('.0'):

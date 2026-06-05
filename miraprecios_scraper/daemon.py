@@ -4,6 +4,7 @@ import subprocess
 import logging
 import json
 import shutil
+import concurrent.futures
 from datetime import datetime
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -135,7 +136,7 @@ def run_scraper_cycle(force=False):
     
     tiendas = ["dia", "changomas", "jumbo", "vea", "disco", "carrefour"]
     
-    for tienda in tiendas:
+    def run_spider(tienda):
         logger.info("---------------------------------------------------")
         logger.info(f"[*] Raspando supermercados {tienda}...")
         try:
@@ -145,6 +146,13 @@ def run_scraper_cycle(force=False):
             logger.error(f"[!] Error ejecutando Scrapy para {tienda} (Código: {e.returncode})")
         except subprocess.TimeoutExpired:
             logger.error(f"[!] Timeout: El proceso de Scrapy para {tienda} tardó demasiado y fue cancelado.")
+
+    # Ejecutar arañas en paralelo con un máximo de trabajadores
+    max_workers = int(os.environ.get('MAX_CONCURRENT_SPIDERS', 3))
+    logger.info(f"[*] Lanzando {len(tiendas)} arañas con un nivel de concurrencia de {max_workers}...")
+    
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        executor.map(run_spider, tiendas)
             
     logger.info("---------------------------------------------------")
     logger.info("[*] Paso 3/3: Clustering Fuzzy pre-calculado...")

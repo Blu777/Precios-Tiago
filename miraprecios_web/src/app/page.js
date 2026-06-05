@@ -1,4 +1,5 @@
 import SearchClient from '../components/SearchClient';
+import BestDiscounts from '../components/BestDiscounts';
 
 export const metadata = {
   title: 'MiraPrecios - Comparador de Supermercados',
@@ -27,6 +28,10 @@ export default function Home() {
           {TEXTOS.subtitulo}
         </p>
       </header>
+
+      <div className="max-w-7xl mx-auto">
+        <BestDiscounts />
+      </div>
 
       <SearchClient />
     </div>

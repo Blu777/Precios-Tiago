@@ -10,8 +10,9 @@ NEWSPIDER_MODULE = 'miraprecios_scraper.spiders'
 ROBOTSTXT_OBEY = False
 
 # Configurar un retraso (DOWNLOAD_DELAY) para evitar bloqueos
-DOWNLOAD_DELAY = 1
-CONCURRENT_REQUESTS_PER_DOMAIN = 8
+# Reducimos el delay estático porque usaremos AutoThrottle
+DOWNLOAD_DELAY = 0.5
+CONCURRENT_REQUESTS_PER_DOMAIN = 16
 
 # Las cookies suelen ser críticas para el manejo de sucursales
 COOKIES_ENABLED = True
@@ -45,7 +46,11 @@ RETRY_TIMES = 10
 RETRY_HTTP_CODES = [403, 429, 500, 502, 503, 504]
 # Exponential backoff parameters
 RETRY_PRIORITY_ADJUST = -1
-DOWNLOAD_DELAY = 1.5
+# Usar AutoThrottle en lugar de delay fijo largo
+AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_START_DELAY = 0.5
+AUTOTHROTTLE_MAX_DELAY = 10
+AUTOTHROTTLE_TARGET_CONCURRENCY = 3.0
 RANDOMIZE_DOWNLOAD_DELAY = True
 
 

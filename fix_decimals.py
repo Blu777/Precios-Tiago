@@ -37,5 +37,8 @@ def fix_decimals(db_path):
     conn.close()
     print("¡Base de datos limpiada con éxito!")
 
+import sys
+
 if __name__ == '__main__':
-    fix_decimals('miraprecios.db')
+    db_path = sys.argv[1] if len(sys.argv) > 1 else 'miraprecios.db'
+    fix_decimals(db_path)

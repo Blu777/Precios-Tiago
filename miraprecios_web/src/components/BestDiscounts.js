@@ -1,5 +1,5 @@
 import { prisma } from '../lib/prisma';
-import ProductCard from './ProductCard';
+import BestDiscountsClient from './BestDiscountsClient';
 import { unstable_cache } from 'next/cache';
 
 const getDiscounts = unstable_cache(
@@ -15,14 +15,14 @@ const getDiscounts = unstable_cache(
             s.precio_lista as list_price,
             s.supermercado_id as supermarket,
             s.product_url,
-            ((s.precio_lista - s.precio_actual) / s.precio_lista) * 100 as discount_percentage
+            (s.precio_lista - s.precio_actual) as discount_amount
         FROM SucursalPrecio s
         JOIN ProductoMaestro p ON s.producto_ean = p.ean
         WHERE s.precio_lista > s.precio_actual
             AND s.precio_lista IS NOT NULL
             AND s.precio_actual > 0
             AND p.url_imagen IS NOT NULL
-        ORDER BY discount_percentage DESC
+        ORDER BY discount_amount DESC
         LIMIT 12
       `;
       
@@ -52,26 +52,5 @@ const getDiscounts = unstable_cache(
 export default async function BestDiscounts() {
   const descuentos = await getDiscounts();
 
-  if (!descuentos || descuentos.length === 0) {
-    return null;
-  }
-
-  return (
-    <section className="mb-12">
-      <div className="flex items-center gap-3 mb-6">
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-          🔥 Los Mejores Descuentos
-        </h2>
-        <span className="bg-red-100 text-red-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider animate-pulse">
-          ¡Aprovechá hoy!
-        </span>
-      </div>
-      
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-        {descuentos.map((producto, idx) => (
-          <ProductCard key={`${producto.ean}-${producto.sucursales[0].id}-${idx}`} producto={producto} />
-        ))}
-      </div>
-    </section>
-  );
+  return <BestDiscountsClient descuentos={descuentos} />;
 }

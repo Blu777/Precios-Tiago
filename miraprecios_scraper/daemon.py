@@ -134,13 +134,16 @@ def run_scraper_cycle(force=False):
     logger.info("---------------------------------------------------")
     logger.info("[*] Paso 2/3: Recolección de URLs e Imágenes en VTEX...")
     
-    tiendas = ["dia", "changomas", "jumbo", "vea", "disco", "carrefour"]
+    tiendas = ["dia", "changomas", "jumbo", "vea", "disco", "carrefour", "coto"]
     
     def run_spider(tienda):
         logger.info("---------------------------------------------------")
         logger.info(f"[*] Raspando supermercados {tienda}...")
         try:
-            subprocess.run(["scrapy", "crawl", "vtex_dinamico", "-a", f"tienda={tienda}"], check=True, timeout=7200)
+            if tienda == "coto":
+                subprocess.run(["scrapy", "crawl", "coto"], check=True, timeout=7200)
+            else:
+                subprocess.run(["scrapy", "crawl", "vtex_dinamico", "-a", f"tienda={tienda}"], check=True, timeout=7200)
             logger.info(f"[✔] {tienda} completado exitosamente.")
         except subprocess.CalledProcessError as e:
             logger.error(f"[!] Error ejecutando Scrapy para {tienda} (Código: {e.returncode})")

@@ -16,5 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar el proyecto
 COPY . .
 
+# Asegurar permisos de ejecución y formato correcto para el script de entrada
+RUN chmod +x entrypoint.sh
+
 # Usar el script de inicialización
 ENTRYPOINT ["./entrypoint.sh"]

@@ -40,6 +40,41 @@ def mark_run_today():
     except Exception as e:
         logger.error(f"[!] Error guardando state file: {e}")
 
+def sync_temp_to_final():
+    logger.info(f"[*] Reemplazando base de datos de producción atómicamente...")
+    try:
+        os.makedirs(os.path.dirname(FINAL_DB), exist_ok=True)
+        if not os.path.exists(FINAL_DB):
+            logger.info("[*] Creando base de datos final por primera vez...")
+            shutil.copy2(TEMP_DB, FINAL_DB)
+            os.chmod(FINAL_DB, 0o666)
+        else:
+            import sqlite3
+            logger.info("[*] Sincronizando datos a producción atómicamente (WAL-friendly)...")
+            conn = sqlite3.connect(FINAL_DB, isolation_level=None)
+            try:
+                conn.execute("PRAGMA journal_mode=WAL;")
+                conn.execute("PRAGMA synchronous=NORMAL;")
+                conn.execute("BEGIN EXCLUSIVE;")
+                conn.execute(f"ATTACH DATABASE '{TEMP_DB}' AS temp_db;")
+                
+                conn.execute("DELETE FROM ProductoMaestro;")
+                conn.execute("DELETE FROM SucursalPrecio;")
+                
+                conn.execute("INSERT INTO ProductoMaestro SELECT * FROM temp_db.ProductoMaestro;")
+                conn.execute("INSERT INTO SucursalPrecio SELECT * FROM temp_db.SucursalPrecio;")
+                
+                conn.execute("COMMIT;")
+                conn.execute("DETACH DATABASE temp_db;")
+                logger.info("[✔] Base de datos de producción actualizada (Transacción completada).")
+            except Exception as e:
+                logger.error(f"[!] Error durante la transacción SQLite: {e}")
+                conn.execute("ROLLBACK;")
+            finally:
+                conn.close()
+    except Exception as e:
+        logger.error(f"[!] Error crítico al reemplazar BD de producción: {e}")
+
 def run_scraper_cycle(force=False):
     if not force and check_if_already_run_today():
         logger.info("[*] El ciclo diario ya se ejecutó hoy. Esperando al próximo.")
@@ -88,6 +123,13 @@ def run_scraper_cycle(force=False):
     except subprocess.CalledProcessError as e:
         logger.warning(f"[!] Falló ingesta SEPA (Código: {e.returncode}). Continuando con crawler.")
         
+    if not usando_turso:
+        logger.info("[*] SEPA descargado. Sincronizando a producción (Live)...")
+        sync_temp_to_final()
+        # A partir de ahora el scraper escribirá directamente en la base de datos en vivo.
+        logger.info("[*] Cambiando DB_PATH a producción para que el Scraper escriba en vivo.")
+        os.environ['DB_PATH'] = FINAL_DB
+
     logger.info("---------------------------------------------------")
     logger.info("[*] Paso 2/3: Recolección de URLs e Imágenes en VTEX...")
     
@@ -115,45 +157,7 @@ def run_scraper_cycle(force=False):
     if usando_turso:
         logger.info("[✔] Extracción completada. Los datos fueron sincronizados a Turso directamente.")
     else:
-        # Sincronizar la BD temporal a producción de forma atómica y compatible con Prisma (WAL)
-        logger.info(f"[*] Reemplazando base de datos de producción atómicamente...")
-        try:
-            os.makedirs(os.path.dirname(FINAL_DB), exist_ok=True)
-            
-            if not os.path.exists(FINAL_DB):
-                logger.info("[*] Creando base de datos final por primera vez...")
-                shutil.copy2(TEMP_DB, FINAL_DB)
-                # Asegurar permisos legibles
-                os.chmod(FINAL_DB, 0o666)
-            else:
-                import sqlite3
-                logger.info("[*] Sincronizando datos a producción atómicamente (WAL-friendly)...")
-                
-                conn = sqlite3.connect(FINAL_DB, isolation_level=None)
-                try:
-                    conn.execute("PRAGMA journal_mode=WAL;")
-                    conn.execute("PRAGMA synchronous=NORMAL;")
-                    conn.execute("BEGIN EXCLUSIVE;")
-                    conn.execute(f"ATTACH DATABASE '{TEMP_DB}' AS temp_db;")
-                    
-                    # Sincronizamos las tablas, Next.js no pierde el File Descriptor
-                    conn.execute("DELETE FROM ProductoMaestro;")
-                    conn.execute("DELETE FROM SucursalPrecio;")
-                    
-                    conn.execute("INSERT INTO ProductoMaestro SELECT * FROM temp_db.ProductoMaestro;")
-                    conn.execute("INSERT INTO SucursalPrecio SELECT * FROM temp_db.SucursalPrecio;")
-                    
-                    conn.execute("COMMIT;")
-                    conn.execute("DETACH DATABASE temp_db;")
-                    logger.info("[✔] Base de datos de producción actualizada (Transacción completada).")
-                except Exception as e:
-                    logger.error(f"[!] Error durante la transacción SQLite: {e}")
-                    conn.execute("ROLLBACK;")
-                finally:
-                    conn.close()
-                    
-        except Exception as e:
-            logger.error(f"[!] Error crítico al reemplazar BD de producción: {e}")
+        logger.info("[✔] Extracción completada. Los datos ya fueron sincronizados en vivo.")
 
     mark_run_today()
     logger.info("===================================================")

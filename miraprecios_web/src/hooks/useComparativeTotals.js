@@ -7,9 +7,9 @@ export function useComparativeTotals(cart) {
     let total = 0;
     let missingCount = 0;
     cart.forEach(item => {
-      const precioSup = Reflect.get(item.precios, sup.id);
-      if (precioSup && precioSup.precio_actual) {
-        total += precioSup.precio_actual;
+      const precioSup = item.sucursales?.find(s => s.id === sup.id);
+      if (precioSup && precioSup.precio) {
+        total += precioSup.precio;
       } else {
         missingCount++;
       }

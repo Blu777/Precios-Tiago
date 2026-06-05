@@ -1,8 +1,8 @@
 import os
 from sqlalchemy import create_engine
 
-turso_url = "libsql://preciostiago-tiagonatale.aws-us-east-2.turso.io"
-turso_token = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODAzNTMwMzYsImlkIjoiMDE5ZTgzNTQtMjIwMS03YmE1LTgzMWQtMTBhMmU1NGE1NmJjIiwicmlkIjoiYWJmMTNhNmMtNGYxNS00NjFkLThhNWMtNDg3MzdkNjNlYWIyIn0.slo9vq6pUh9yI8wGoUfY0cQP64eow7Jx-Jje0OXRhbF1HQdaZ1jPUYhc9ZOC33JPQB1C-eKjLEnfFNky0cWXCQ"
+turso_url = os.environ.get("TURSO_URL", "libsql://preciostiago-tiagonatale.aws-us-east-2.turso.io")
+turso_token = os.environ.get("TURSO_AUTH_TOKEN", "YOUR_TOKEN_HERE")
 
 if turso_url.startswith("libsql://"):
     db_url = turso_url.replace("libsql://", "sqlite+libsql://", 1)

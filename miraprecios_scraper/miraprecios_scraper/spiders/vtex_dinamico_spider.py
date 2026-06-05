@@ -239,6 +239,9 @@ class VtexDinamicoSpider(scrapy.Spider):
             # Robustez extra: Si ListPrice no existe o es 0, solemos clonar el Price
             if not precio_lista or precio_lista == 0:
                 precio_lista = precio_actual
+            elif precio_actual and precio_lista > precio_actual * 10:
+                # Cencosud VTEX a veces devuelve el ListPrice (Base Price sin IVA) multiplicado por 100
+                precio_lista = precio_lista / 100.0
                 
             promocion_text = None
             teasers = active_seller.get('Teasers', [])
@@ -250,6 +253,15 @@ class VtexDinamicoSpider(scrapy.Spider):
                     promocion_text = primer_teaser.get('<name>')
                 elif 'name' in primer_teaser:
                     promocion_text = primer_teaser.get('name')
+
+            # Fallback a productClusters si la promo es a nivel general del producto
+            if not promocion_text:
+                clusters = product.get('productClusters', {})
+                promo_kws = ['2x1', '3x2', '4x2', '50%', '60%', '70%', '80%', '2do', '2da', 'segunda unidad', 'lleva 3', 'llevá 3']
+                for c_val in clusters.values():
+                    if isinstance(c_val, str) and any(kw in c_val.lower() for kw in promo_kws):
+                        promocion_text = c_val
+                        break
             
             url_producto = link
             if url_producto and not url_producto.startswith('http'):

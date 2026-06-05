@@ -22,11 +22,13 @@ export async function GET() {
             },
         });
 
-        const categorias = categoriasData.map(c => ({
-            id: c.categoria_id,
-            nombre: c.categoria_id.charAt(0).toUpperCase() + c.categoria_id.slice(1),
-            count: c._count.categoria_id
-        }));
+        const categorias = categoriasData
+            .filter(c => !c.categoria_id.toLowerCase().startsWith('catv'))
+            .map(c => ({
+                id: c.categoria_id,
+                nombre: c.categoria_id.charAt(0).toUpperCase() + c.categoria_id.slice(1),
+                count: c._count.categoria_id
+            }));
 
         return Response.json({ categorias }, {
             headers: {

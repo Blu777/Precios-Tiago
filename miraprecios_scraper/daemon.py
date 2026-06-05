@@ -98,6 +98,10 @@ def run_scraper_cycle(force=False):
             shutil.copy2(FINAL_DB, TEMP_DB)
         else:
             logger.info(f"[*] Iniciando con base de datos vacía ({TEMP_DB}).")
+            # Asegurar que el archivo exista para que shutil.copy2 no falle más adelante
+            import sqlite3
+            conn = sqlite3.connect(TEMP_DB)
+            conn.close()
 
         # Limpiar la tabla de precios para que solo queden los frescos del día, manteniendo ProductoMaestro
         if os.path.exists(TEMP_DB):
@@ -112,20 +116,10 @@ def run_scraper_cycle(force=False):
             except Exception as e:
                 logger.warning(f"[!] Error limpiando tabla de precios: {e}")
 
-    logger.info("[*] Paso 1/3: Ingesta de dataset base oficial de SEPA...")
+    logger.info("[*] Paso 1/3: Sincronización de base de datos inicial (SEPA desactivado)...")
     
-    try:
-        subprocess.run(["python3", "src/data/sepa_downloader.py"], check=True)
-    except subprocess.CalledProcessError as e:
-        logger.warning(f"[!] Falló descarga SEPA (Código: {e.returncode}). Continuando con crawler.")
-        
-    try:
-        subprocess.run(["python3", "src/data/sepa_ingestor.py"], check=True)
-    except subprocess.CalledProcessError as e:
-        logger.warning(f"[!] Falló ingesta SEPA (Código: {e.returncode}). Continuando con crawler.")
-        
     if not usando_turso:
-        logger.info("[*] SEPA descargado. Sincronizando a producción (Live)...")
+        logger.info("[*] Sincronizando a producción (Live)...")
         sync_temp_to_final()
         # A partir de ahora el scraper escribirá directamente en la base de datos en vivo.
         logger.info("[*] Cambiando DB_PATH a producción para que el Scraper escriba en vivo.")

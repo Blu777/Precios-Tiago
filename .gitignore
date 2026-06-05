@@ -11,7 +11,7 @@ __pycache__/
 *.pyc
 
 # Carpetas de datos y bases de datos locales
-data/
+/data/
 miraprecios_scraper/data/
 miraprecios_web/data/
 *.sqlite

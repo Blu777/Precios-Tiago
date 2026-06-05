@@ -2,6 +2,7 @@ import re
 import unicodedata
 import hashlib
 from sqlalchemy.dialects.sqlite import insert
+from sqlalchemy.sql import func
 from .database import get_session, ProductoMaestro, SucursalPrecio
 
 class DataNormalizationPipeline:
@@ -123,6 +124,7 @@ class SQLitePipeline:
                 contenido_neto=float(item.get('net_content')) if item.get('net_content') is not None else 0.0,
                 unidad_medida=item.get('unit'),
                 categoria_id=item.get('categoria_id'),
+                url_imagen=item.get('image_url')
             )
             
             on_conflict_maestro = stmt_maestro.on_conflict_do_update(
@@ -130,7 +132,8 @@ class SQLitePipeline:
                 set_={
                     'nombre_estandarizado': stmt_maestro.excluded.nombre_estandarizado,
                     'marca': stmt_maestro.excluded.marca,
-                    'categoria_id': stmt_maestro.excluded.categoria_id
+                    'categoria_id': stmt_maestro.excluded.categoria_id,
+                    'url_imagen': func.coalesce(stmt_maestro.excluded.url_imagen, ProductoMaestro.url_imagen)
                 }
             )
             

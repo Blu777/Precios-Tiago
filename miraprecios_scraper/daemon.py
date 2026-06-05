@@ -63,6 +63,19 @@ def run_scraper_cycle(force=False):
         else:
             logger.info(f"[*] Iniciando con base de datos vacía ({TEMP_DB}).")
 
+        # Limpiar la tabla de precios para que solo queden los frescos del día, manteniendo ProductoMaestro
+        if os.path.exists(TEMP_DB):
+            import sqlite3
+            try:
+                logger.info("[*] Limpiando tabla de precios antiguos (SucursalPrecio)...")
+                conn = sqlite3.connect(TEMP_DB)
+                conn.execute("DELETE FROM SucursalPrecio;")
+                conn.commit()
+                conn.close()
+                logger.info("[✔] Tabla de precios limpia. Lista para recibir carga fresca.")
+            except Exception as e:
+                logger.warning(f"[!] Error limpiando tabla de precios: {e}")
+
     logger.info("[*] Paso 1/3: Ingesta de dataset base oficial de SEPA...")
     
     try:

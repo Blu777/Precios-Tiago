@@ -16,6 +16,11 @@ if (!url.startsWith('libsql://') && !url.startsWith('https://')) {
         libsql.execute("PRAGMA journal_mode = WAL;").catch(e => console.warn(e));
         libsql.execute("PRAGMA synchronous = NORMAL;").catch(e => console.warn(e));
         libsql.execute("PRAGMA busy_timeout = 5000;").catch(e => console.warn(e));
+        
+        // Auto-fix para asegurar que la columna promocion exista (sobrevive a reinicios/recreaciones de DB)
+        libsql.execute("ALTER TABLE SucursalPrecio ADD COLUMN promocion TEXT;").catch(() => {
+            // Ignorar el error si la columna ya existe
+        });
     } catch (e) {
         console.warn("Could not set SQLite PRAGMAs (might be ignored if using Turso HTTP):", e);
     }

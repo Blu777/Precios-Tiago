@@ -77,6 +77,15 @@ def get_engine():
         conn.execute(text("PRAGMA busy_timeout=5000"))
         
     Base.metadata.create_all(engine)
+
+    # Auto-fix para asegurar que la columna existe en bases de datos viejas o recreadas parcialmente
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE SucursalPrecio ADD COLUMN promocion TEXT;"))
+            conn.commit()
+    except Exception:
+        pass # La columna ya existe, está todo ok
+
     return engine
 
 def get_session(engine=None):

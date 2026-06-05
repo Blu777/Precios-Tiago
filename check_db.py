@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect('miraprecios.db')
+conn = sqlite3.connect('miraprecios(1).db')
 c = conn.cursor()
 
 c.execute("SELECT ean, nombre_estandarizado, marca FROM ProductoMaestro WHERE nombre_estandarizado LIKE '%COCA COLA%' AND nombre_estandarizado LIKE '%600%';")

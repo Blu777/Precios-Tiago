@@ -1,7 +1,7 @@
 import requests
 import json
 
-base_url = "https://www.masonline.com.ar"
+base_url = "https://www.jumbo.com.ar"
 # Search for Coca Cola 600ml
 url = f"{base_url}/api/catalog_system/pub/products/search/coca-cola"
 headers = {

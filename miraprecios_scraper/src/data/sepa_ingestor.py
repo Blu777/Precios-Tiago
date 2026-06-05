@@ -123,8 +123,8 @@ def process_sepa_daily_dir(base_dir):
     # 1. Usar productos_ean si es válido
     # 2. Usar id_producto si es válido  
     # 3. Generar EAN sintético a partir de descripcion+marca (para productos sin código)
-    df_all['productos_ean'] = df_all['productos_ean'].astype(str).str.strip()
-    df_all['id_producto'] = df_all['id_producto'].astype(str).str.strip()
+    df_all['productos_ean'] = df_all['productos_ean'].astype(str).str.strip().str.replace(r'\.0$', '', regex=True)
+    df_all['id_producto'] = df_all['id_producto'].astype(str).str.strip().str.replace(r'\.0$', '', regex=True)
     
     INVALID_EAN = {'0', '0.0', '1', '1.0', 'nan', ''}
     

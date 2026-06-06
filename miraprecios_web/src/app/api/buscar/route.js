@@ -41,7 +41,10 @@ export async function GET(request) {
                 precios_sucursales: {
                     where: {
                         disponible_online: true,
-                        precio_actual: { gt: 10 }
+                        precio_actual: { gt: 10 },
+                        ultima_actualizacion: {
+                            gte: new Date(Date.now() - 48 * 60 * 60 * 1000)
+                        }
                     },
                     orderBy: { precio_actual: 'asc' }
                 }

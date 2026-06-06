@@ -79,6 +79,11 @@ class CotoSpider(scrapy.Spider):
         for item in results:
             data_field = item.get('data', {})
             
+            # Filtrar productos fantasma/sin stock en coto (store_availability vacio)
+            store_availability = data_field.get('store_availability', [])
+            if not store_availability:
+                continue
+            
             sku_id = data_field.get('sku_id') or item.get('value')
             
             # Limpieza y conversión de EAN/Barcode

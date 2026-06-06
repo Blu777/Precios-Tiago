@@ -132,17 +132,24 @@ export default function ProductCard({ producto }) {
                 )}
                 
                 {/* Precio y Supermercados */}
-                <div className="flex items-center gap-2">
-                  <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 tracking-tight">
-                    {formatearPrecio(lowestPrice)}
-                  </span>
-                  <div className="flex items-center">
-                    {cheapestSup && cheapestSup.logo && (
-                      <div className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white shadow-sm border border-gray-200 p-0.5 overflow-hidden flex-shrink-0 relative hover:scale-110 transition-transform" title={`El más barato en ${cheapestSup.nombre}`}>
-                         <img src={cheapestSup.logo} alt={cheapestSup.nombre} className="w-full h-full object-contain" />
-                      </div>
-                    )}
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 tracking-tight">
+                      {formatearPrecio(lowestPrice)}
+                    </span>
+                    <div className="flex items-center">
+                      {cheapestSup && cheapestSup.logo && (
+                        <div className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white shadow-sm border border-gray-200 p-0.5 overflow-hidden flex-shrink-0 relative hover:scale-110 transition-transform" title={`El más barato en ${cheapestSup.nombre}`}>
+                           <img src={cheapestSup.logo} alt={cheapestSup.nombre} className="w-full h-full object-contain" />
+                        </div>
+                      )}
+                    </div>
                   </div>
+                  {cheapestBranch?.updated_at && (
+                    <span className="text-[9px] sm:text-[10px] text-gray-400 font-medium">
+                      Act: {new Date(cheapestBranch.updated_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  )}
                 </div>
               </div>
             ) : (
@@ -277,15 +284,22 @@ export default function ProductCard({ producto }) {
                               </span>
                             )}
                             <div className="flex items-center gap-2">
-                              <span className={`font-extrabold text-base ${isWinner ? 'text-emerald-700' : 'text-gray-900'}`}>
-                                {formatearPrecio(sucursalValida.precio)}
-                              </span>
+                              <div className="flex flex-col items-end">
+                                <span className={`font-extrabold text-base leading-tight ${isWinner ? 'text-emerald-700' : 'text-gray-900'}`}>
+                                  {formatearPrecio(sucursalValida.precio)}
+                                </span>
+                                {sucursalValida.updated_at && (
+                                  <span className="text-[9px] text-gray-400 font-medium">
+                                    Act: {new Date(sucursalValida.updated_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                                  </span>
+                                )}
+                              </div>
                             {sucursalValida.product_url && (
                               <a
                                 href={sucursalValida.product_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="bg-blue-50 text-blue-600 p-1.5 rounded hover:bg-blue-100 transition-colors"
+                                className="bg-blue-50 text-blue-600 p-1.5 rounded hover:bg-blue-100 transition-colors h-fit"
                                 title={`Ver en ${sup.nombre}`}
                               >
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

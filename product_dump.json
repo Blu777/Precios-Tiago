@@ -1,0 +1,1313 @@
+{
+  "productId": "372299",
+  "productName": "Bebida Energizante Red Edition Sabor Sand\u00eda 250 Cc Red Bull",
+  "brand": "RED BULL",
+  "brandId": 9332,
+  "brandImageUrl": null,
+  "linkText": "energizante-watermelon-250-ml-red-bull",
+  "productReference": "12160301002",
+  "productReferenceCode": "12160301002",
+  "categoryId": "40",
+  "productTitle": "Bebida Energizante Red Edition Sabor Sand\u00eda 250 Cc Red Bull",
+  "metaTagDescription": "Energizante Watermelon 250 Ml Red Bull",
+  "releaseDate": "2026-04-13T00:00:00Z",
+  "clusterHighlights": {
+    "60751": "Hasta J100 en Bebidas",
+    "60877": "JUMBO_rpatmpcheck100-2jchecksar"
+  },
+  "productClusters": {
+    "34072": "Hasta 2do al 50% en Bebidas seleccionadas",
+    "35099": "prueba manager 2 nueva",
+    "44551": "Juntada | Gen Z",
+    "52088": "Prime Week",
+    "53919": "Cencopay",
+    "60751": "Hasta J100 en Bebidas",
+    "60877": "JUMBO_rpatmpcheck100-2jchecksar"
+  },
+  "searchableClusters": {
+    "34072": "Hasta 2do al 50% en Bebidas seleccionadas",
+    "35099": "prueba manager 2 nueva",
+    "44551": "Juntada | Gen Z",
+    "52088": "Prime Week",
+    "53919": "Cencopay",
+    "60751": "Hasta J100 en Bebidas",
+    "60877": "JUMBO_rpatmpcheck100-2jchecksar"
+  },
+  "categories": [
+    "/Bebidas/Energizantes/",
+    "/Bebidas/"
+  ],
+  "categoriesIds": [
+    "/2/40/",
+    "/2/"
+  ],
+  "link": "https://www.vea.com.ar/energizante-watermelon-250-ml-red-bull/p",
+  "ProductData": [
+    "{\"allow_notes\":true,\"allow_substitute\":true,\"cart_limit\":\"0\",\"brandName\":\"RED BULL\",\"brandEcomId\":\"9332\",\"measurement_unit\":\"un\",\"unit_multiplier\":1,\"measurement_unit_un\":\"ml.\",\"unit_multiplier_un\":250,\"measurement_unit_selector\":false,\"url_canonical\":\"\",\"provider_code\":\"1072\"}"
+  ],
+  "SkuData": [
+    "{\"371019\":{\"ref_id\":\"12160301002\",\"cart_limit\":0,\"allow_notes\":true,\"allow_substitute\":true,\"measurement_unit\":\"un\",\"unit_multiplier\":1,\"promotions\":[],\"url_canonical\":\"\",\"measurement_unit_un\":\"ml.\",\"unit_multiplier_un\":250,\"measurement_unit_selector\":false,\"release_data\":{\"is_new\":false},\"cart_type\":\"1\"}}"
+  ],
+  "Configuraciones": [
+    "ProductData",
+    "SkuData"
+  ],
+  "Ingredientes": [
+    "'agua carbonatada', 'sacarosa', 'glucosa', 'acidulante \u00e1cido c\u00edtrico', 'taurina', 'regulador de acidez citrato de sodio', 'cafe\u00edna', 'vitamina niacina', 'vitamina \u00e1cido pantot\u00e9nico', 'vitamina b6', 'vitamina b12', 'aromatizantes', 'colorante antocianina', 'colorante riboflavina'"
+  ],
+  "Tabla Nutricional": [
+    "{'nutritional_table_set_name': 'Tabla Nutricional', 'basic_unit_name': 'ml', 'portion_text': '1 Lata', 'portion_value': 250, 'portion_unit_name': 'ml', 'num_portions': 1, 'energy_value': 44.8, 'energy_value_per_portion': 112, 'energy_unit_name': 'kCal', 'sugars_value': 10.8, 'sugars_value_per_portion': 27, 'sugars_unit_name': 'g', 'sodium_value': 35.2, 'sodium_value_per_portion': 88, 'sodium_unit_name': 'mg'}"
+  ],
+  "Sellos": [
+    "[{'certification_type_code': 'aplv_suitable', 'certification_type_name': 'Apto para APLV', 'certifiers': [{'certifier_id': 0, 'certifier_name': '', 'certifier_logo_url': '', 'certification_country_id': 32, 'certification_country_name': 'Argentina', 'certification_degree_id': 1, 'certification_degree_name': 'APTO, Seg\u00fan lista de Ingredientes y Trazas', 'certification_start': 0, 'certification_end': 0, 'certification_comments': '', 'certification_last_update': 1780309582}]}, {'certification_type_code': 'lactose_free', 'certification_type_name': 'Libre de Lactosa', 'certifiers': [{'certifier_id': 0, 'certifier_name': '', 'certifier_logo_url': '', 'certification_country_id': 32, 'certification_country_name': 'Argentina', 'certification_degree_id': 1, 'certification_degree_name': 'APTO, Seg\u00fan lista de Ingredientes y Trazas', 'certification_start': 0, 'certification_end': 0, 'certification_comments': '', 'certification_last_update': 1780309582}]}, {'certification_type_code': 'soy_free', 'certification_type_name': 'Libre de Soya', 'certifiers': [{'certifier_id': 0, 'certifier_name': '', 'certifier_logo_url': '', 'certification_country_id': 32, 'certification_country_name': 'Argentina', 'certification_degree_id': 1, 'certification_degree_name': 'APTO, Seg\u00fan lista de Ingredientes y Trazas', 'certification_start': 0, 'certification_end': 0, 'certification_comments': '', 'certification_last_update': 1780309582}]}, {'certification_type_code': 'egg_free', 'certification_type_name': 'Libre de Huevo', 'certifiers': [{'certifier_id': 0, 'certifier_name': '', 'certifier_logo_url': '', 'certification_country_id': 32, 'certification_country_name': 'Argentina', 'certification_degree_id': 1, 'certification_degree_name': 'APTO, Seg\u00fan lista de Ingredientes y Trazas', 'certification_start': 0, 'certification_end': 0, 'certification_comments': '', 'certification_last_update': 1780309582}]}, {'certification_type_code': 'fish_free', 'certification_type_name': 'Libre de Peces', 'certifiers': [{'certifier_id': 0, 'certifier_name': '', 'certifier_logo_url': '', 'certification_country_id': 32, 'certification_country_name': 'Argentina', 'certification_degree_id': 1, 'certification_degree_name': 'APTO, Seg\u00fan lista de Ingredientes y Trazas', 'certification_start': 0, 'certification_end': 0, 'certification_comments': '', 'certification_last_update': 1780309582}]}, {'certification_type_code': 'seafood_free', 'certification_type_name': 'Libre de Mariscos', 'certifiers': [{'certifier_id': 0, 'certifier_name': '', 'certifier_logo_url': '', 'certification_country_id': 32, 'certification_country_name': 'Argentina', 'certification_degree_id': 1, 'certification_degree_name': 'APTO, Seg\u00fan lista de Ingredientes y Trazas', 'certification_start': 0, 'certification_end': 0, 'certification_comments': '', 'certification_last_update': 1780309582}]}, {'certification_type_code': 'peanut_free', 'certification_type_name': 'Libre de Man\u00ed', 'certifiers': [{'certifier_id': 0, 'certifier_name': '', 'certifier_logo_url': '', 'certification_country_id': 32, 'certification_country_name': 'Argentina', 'certification_degree_id': 1, 'certification_degree_name': 'APTO, Seg\u00fan lista de Ingredientes y Trazas', 'certification_start': 0, 'certification_end': 0, 'certification_comments': '', 'certification_last_update': 1780309582}]}, {'certification_type_code': 'nuts_free', 'certification_type_name': 'Libre de Frutos Secos', 'certifiers': [{'certifier_id': 0, 'certifier_name': '', 'certifier_logo_url': '', 'certification_country_id': 32, 'certification_country_name': 'Argentina', 'certification_degree_id': 1, 'certification_degree_name': 'APTO, Seg\u00fan lista de Ingredientes y Trazas', 'certification_start': 0, 'certification_end': 0, 'certification_comments': '', 'certification_last_update': 1780309582}]}, {'certification_type_code': 'walnuts_free', 'certification_type_name': 'Libre de Nueces', 'certifiers': [{'certifier_id': 0, 'certifier_name': '', 'certifier_logo_url': '', 'certification_country_id': 32, 'certification_country_name': 'Argentina', 'certification_degree_id': 1, 'certification_degree_name': 'APTO, Seg\u00fan lista de Ingredientes y Trazas', 'certification_start': 0, 'certification_end': 0, 'certification_comments': '', 'certification_last_update': 1780309582}]}, {'certification_type_code': 'sulphite_free', 'certification_type_name': 'Libre de Sulfitos', 'certifiers': [{'certifier_id': 0, 'certifier_name': '', 'certifier_logo_url': '', 'certification_country_id': 32, 'certification_country_name': 'Argentina', 'certification_degree_id': 1, 'certification_degree_name': 'APTO, Seg\u00fan lista de Ingredientes y Trazas', 'certification_start': 0, 'certification_end': 0, 'certification_comments': '', 'certification_last_update': 1780309582}]}, {'certification_type_code': 'wheat_free', 'certification_type_name': 'Libre de Trigo', 'certifiers': [{'certifier_id': 0, 'certifier_name': '', 'certifier_logo_url': '', 'certification_country_id': 32, 'certification_country_name': 'Argentina', 'certification_degree_id': 1, 'certification_degree_name': 'APTO, Seg\u00fan lista de Ingredientes y Trazas', 'certification_start': 0, 'certification_end': 0, 'certification_comments': '', 'certification_last_update': 1780309582}]}]"
+  ],
+  "Informacion Nutricional OkTo": [
+    "Ingredientes",
+    "Tabla Nutricional",
+    "Sellos"
+  ],
+  "Tipo de Producto": [
+    "Bebidas Energizantes"
+  ],
+  "Pa\u00eds de Origen": [
+    "Argentina"
+  ],
+  "Origen": [
+    "Nacional"
+  ],
+  "Caracter\u00edsticas Destacadas": [
+    "Tipo de Producto",
+    "Pa\u00eds de Origen",
+    "Origen"
+  ],
+  "allSpecifications": [
+    "ProductData",
+    "SkuData",
+    "Ingredientes",
+    "Tabla Nutricional",
+    "Sellos",
+    "Tipo de Producto",
+    "Pa\u00eds de Origen",
+    "Origen"
+  ],
+  "allSpecificationsGroups": [
+    "Configuraciones",
+    "Informacion Nutricional OkTo",
+    "Caracter\u00edsticas Destacadas"
+  ],
+  "description": "<h2>Bebida Energizante Red Edition Sabor Sand\u00eda 250 Cc Red Bull</h2> <p>Esta bebida energizante te brindar\u00e1 una opci\u00f3n refrescante con sabor a sand\u00eda, dise\u00f1ada para mantener tu nivel de energ\u00eda en cualquier momento del d\u00eda. Al conservarla en tu heladera, vas a obtener una experiencia de consumo \u00f3ptima gracias a su formato gasificado.</p> <ul> <li>Contenido neto de 250 Cc por unidad.</li> <li>Presentaci\u00f3n en lata de origen nacional.</li> <li>Bebida gasificada con sabor a sand\u00eda y contenido de az\u00facar.</li> <li>Producto de tipo unitario, ideal para el consumo individual.</li> </ul> <h3>Por qu\u00e9 elegir Bebida Energizante Red Edition</h3> <p>Vas a contar con una bebida energizante de alta calidad que se adapta a tus necesidades diarias. Al tenerla disponible en tu casa, vas a poder disfrutar de su sabor distintivo siempre que lo requieras.</p> <p>Hac\u00e9 ahora tu compra con retiro en el punto de entrega m\u00e1s pr\u00f3ximo o env\u00edo a domicilio.</p>",
+  "items": [
+    {
+      "itemId": "371019",
+      "name": "Bebida Energizante Red Edition Sabor Sand\u00eda 250 Cc Red Bull",
+      "nameComplete": "Bebida Energizante Red Edition Sabor Sand\u00eda 250 Cc Red Bull",
+      "complementName": "",
+      "ean": "9002490258313",
+      "referenceId": [
+        {
+          "Key": "RefId",
+          "Value": "12160301002"
+        }
+      ],
+      "measurementUnit": "un",
+      "unitMultiplier": 1.0,
+      "modalType": null,
+      "isKit": false,
+      "images": [
+        {
+          "imageId": "868167",
+          "imageLabel": "",
+          "imageTag": "<img src=\"~/arquivos/ids/868167-#width#-#height#/12160301002.jpg.jpg?v=638845473560270000\" width=\"#width#\" height=\"#height#\" alt=\"12160301002.jpg\" id=\"\" />",
+          "imageUrl": "https://jumboargentina.vteximg.com.br/arquivos/ids/868167/12160301002.jpg.jpg?v=638845473560270000",
+          "imageText": "12160301002.jpg",
+          "imageLastModified": "2025-06-03T11:35:56.0270000Z"
+        },
+        {
+          "imageId": "872036",
+          "imageLabel": "",
+          "imageTag": "<img src=\"~/arquivos/ids/872036-#width#-#height#/12160301002.jpg?v=638854272444830000\" width=\"#width#\" height=\"#height#\" alt=\"12160301002\" id=\"\" />",
+          "imageUrl": "https://jumboargentina.vteximg.com.br/arquivos/ids/872036/12160301002.jpg?v=638854272444830000",
+          "imageText": "12160301002",
+          "imageLastModified": "2025-06-13T16:00:44.4830000Z"
+        },
+        {
+          "imageId": "872042",
+          "imageLabel": "",
+          "imageTag": "<img src=\"~/arquivos/ids/872042-#width#-#height#/12160301002-3 - copia -4-.jpg?v=638854273097500000\" width=\"#width#\" height=\"#height#\" alt=\"12160301002-3 - copia -4-\" id=\"\" />",
+          "imageUrl": "https://jumboargentina.vteximg.com.br/arquivos/ids/872042/12160301002-3 - copia -4-.jpg?v=638854273097500000",
+          "imageText": "12160301002-3 - copia -4-",
+          "imageLastModified": "2025-06-13T16:01:49.7500000Z"
+        }
+      ],
+      "sellers": [
+        {
+          "sellerId": "1",
+          "sellerName": "Vea Argentina",
+          "addToCartLink": "https://www.vea.com.ar/checkout/cart/add?sku=371019&qty=1&seller=1&sc=34&price=345000&cv=_&sc=34",
+          "sellerDefault": true,
+          "commertialOffer": {
+            "DeliverySlaSamplesPerRegion": {
+              "0": {
+                "DeliverySlaPerTypes": [],
+                "Region": null
+              }
+            },
+            "Installments": [
+              {
+                "Value": 3450.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 1,
+                "PaymentSystemName": "American Express",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "American Express"
+              },
+              {
+                "Value": 1150.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 3,
+                "PaymentSystemName": "American Express",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "American Express"
+              },
+              {
+                "Value": 575.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 6,
+                "PaymentSystemName": "American Express",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "American Express"
+              },
+              {
+                "Value": 287.5,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 12,
+                "PaymentSystemName": "American Express",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "American Express"
+              },
+              {
+                "Value": 191.66,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 18,
+                "PaymentSystemName": "American Express",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "American Express"
+              },
+              {
+                "Value": 143.75,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 24,
+                "PaymentSystemName": "American Express",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "American Express"
+              },
+              {
+                "Value": 115.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 30,
+                "PaymentSystemName": "American Express",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "American Express"
+              },
+              {
+                "Value": 3450.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 1,
+                "PaymentSystemName": "Visa",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Visa"
+              },
+              {
+                "Value": 1150.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 3,
+                "PaymentSystemName": "Visa",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Visa"
+              },
+              {
+                "Value": 575.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 6,
+                "PaymentSystemName": "Visa",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Visa"
+              },
+              {
+                "Value": 287.5,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 12,
+                "PaymentSystemName": "Visa",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Visa"
+              },
+              {
+                "Value": 230.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 15,
+                "PaymentSystemName": "Visa",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Visa"
+              },
+              {
+                "Value": 191.66,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 18,
+                "PaymentSystemName": "Visa",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Visa"
+              },
+              {
+                "Value": 3450.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 1,
+                "PaymentSystemName": "Mastercard",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Mastercard"
+              },
+              {
+                "Value": 1150.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 3,
+                "PaymentSystemName": "Mastercard",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Mastercard"
+              },
+              {
+                "Value": 575.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 6,
+                "PaymentSystemName": "Mastercard",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Mastercard"
+              },
+              {
+                "Value": 287.5,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 12,
+                "PaymentSystemName": "Mastercard",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Mastercard"
+              },
+              {
+                "Value": 230.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 15,
+                "PaymentSystemName": "Mastercard",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Mastercard"
+              },
+              {
+                "Value": 191.66,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 18,
+                "PaymentSystemName": "Mastercard",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Mastercard"
+              },
+              {
+                "Value": 3450.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 1,
+                "PaymentSystemName": "Cabal",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Cabal"
+              },
+              {
+                "Value": 1150.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 3,
+                "PaymentSystemName": "Cabal",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Cabal"
+              },
+              {
+                "Value": 575.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 6,
+                "PaymentSystemName": "Cabal",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Cabal"
+              },
+              {
+                "Value": 287.5,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 12,
+                "PaymentSystemName": "Cabal",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Cabal"
+              },
+              {
+                "Value": 230.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 15,
+                "PaymentSystemName": "Cabal",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Cabal"
+              },
+              {
+                "Value": 191.66,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 18,
+                "PaymentSystemName": "Cabal",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Cabal"
+              },
+              {
+                "Value": 3450.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 1,
+                "PaymentSystemName": "Naranja",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Naranja"
+              },
+              {
+                "Value": 575.0,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 6,
+                "PaymentSystemName": "Naranja",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Naranja"
+              },
+              {
+                "Value": 313.63,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 11,
+                "PaymentSystemName": "Naranja",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Naranja"
+              },
+              {
+                "Value": 287.5,
+                "InterestRate": null,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 12,
+                "PaymentSystemName": "Naranja",
+                "PaymentSystemGroupName": "creditCardPaymentGroup",
+                "Name": "Naranja"
+              },
+              {
+                "Value": 3450.0,
+                "InterestRate": 0.0,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 1,
+                "PaymentSystemName": "Cencosud Pay",
+                "PaymentSystemGroupName": "Cencosud PayPaymentGroup",
+                "Name": "Cencosud Pay \u00e0 vista"
+              },
+              {
+                "Value": 3450.0,
+                "InterestRate": 0.0,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 1,
+                "PaymentSystemName": "Cuenta Corriente",
+                "PaymentSystemGroupName": "custom201PaymentGroupPaymentGroup",
+                "Name": "Cuenta Corriente \u00e0 vista"
+              },
+              {
+                "Value": 3450.0,
+                "InterestRate": 0.0,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 1,
+                "PaymentSystemName": "Tarjeta de D\u00e9bito",
+                "PaymentSystemGroupName": "custom202PaymentGroupPaymentGroup",
+                "Name": "Tarjeta de D\u00e9bito \u00e0 vista"
+              },
+              {
+                "Value": 3450.0,
+                "InterestRate": 0.0,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 1,
+                "PaymentSystemName": "Gift Card Cencosud",
+                "PaymentSystemGroupName": "custom203PaymentGroupPaymentGroup",
+                "Name": "Gift Card Cencosud \u00e0 vista"
+              },
+              {
+                "Value": 3450.0,
+                "InterestRate": 0.0,
+                "TotalValuePlusInterestRate": 3450.0,
+                "NumberOfInstallments": 1,
+                "PaymentSystemName": "Transferencia",
+                "PaymentSystemGroupName": "custom205PaymentGroupPaymentGroup",
+                "Name": "Transferencia \u00e0 vista"
+              }
+            ],
+            "DiscountHighLight": [],
+            "GiftSkuIds": [],
+            "Teasers": [],
+            "PromotionTeasers": [],
+            "BuyTogether": [],
+            "ItemMetadataAttachment": [],
+            "Price": 3450.0,
+            "ListPrice": 285124.0,
+            "PriceWithoutDiscount": 3450.0,
+            "FullSellingPrice": 3450.0,
+            "PriceToken": "eyJhbGciOiJFUzI1NiIsImtpZCI6Ijc2NTIxYTNmLWM5ZjgtNDgxYi1hNTQ2LTA2N2VmOGMyODk1MCIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InByaWNlIjozNDUwMDAsInByaWNlV2l0aG91dERpc2NvdW50IjozNDUwMDAsInNlbGxlciI6IjEiLCJpZCI6IjM3MTAxOSIsImFjY291bnROYW1lIjoidmVhYXJnZW50aW5hIiwic2FsZXNDaGFubmVsIjoiMzQifSwiZXhwIjoxNzgwNzg2MjA1LCJpYXQiOjE3ODA3ODQ0MDUsImp0aSI6IjlmOGI3NGIzLTE4NTQtNDZmMy05ODkxLTlmZmE1OWM2YzBhNSIsImlzcyI6InNlc3Npb24vZGF0YS1zaWduZXIifQ.1ECgpvWbQIWHKiphFq_b94hkZ9HX2zpeFIfnq-_gv4t8rsulfczqY5T_dbapQZHb4CEi9PS5g1-e6tXlsAH9FA",
+            "RewardValue": 0.0,
+            "PriceValidUntil": "2027-06-06T00:00:00Z",
+            "AvailableQuantity": 99999,
+            "IsAvailable": true,
+            "Tax": 0.0,
+            "DeliverySlaSamples": [
+              {
+                "DeliverySlaPerTypes": [],
+                "Region": null
+              }
+            ],
+            "GetInfoErrorMessage": null,
+            "CacheVersionUsedToCallCheckout": "_",
+            "PaymentOptions": {
+              "installmentOptions": [
+                {
+                  "paymentSystem": "1",
+                  "bin": null,
+                  "paymentName": "American Express",
+                  "paymentGroupName": "creditCardPaymentGroup",
+                  "value": 345000,
+                  "installments": [
+                    {
+                      "count": 1,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 345000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 1,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 345000,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 3,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 115000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 3,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 115000,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 6,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 57500,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 6,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 57500,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 12,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 28750,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 12,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 28750,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 18,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 19166,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 18,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 19166,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 24,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 14375,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 24,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 14375,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 30,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 11500,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 30,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 11500,
+                          "total": 345000
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "paymentSystem": "2",
+                  "bin": null,
+                  "paymentName": "Visa",
+                  "paymentGroupName": "creditCardPaymentGroup",
+                  "value": 345000,
+                  "installments": [
+                    {
+                      "count": 1,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 345000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 1,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 345000,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 3,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 115000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 3,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 115000,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 6,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 57500,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 6,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 57500,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 12,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 28750,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 12,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 28750,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 15,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 23000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 15,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 23000,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 18,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 19166,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 18,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 19166,
+                          "total": 345000
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "paymentSystem": "4",
+                  "bin": null,
+                  "paymentName": "Mastercard",
+                  "paymentGroupName": "creditCardPaymentGroup",
+                  "value": 345000,
+                  "installments": [
+                    {
+                      "count": 1,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 345000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 1,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 345000,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 3,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 115000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 3,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 115000,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 6,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 57500,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 6,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 57500,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 12,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 28750,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 12,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 28750,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 15,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 23000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 15,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 23000,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 18,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 19166,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 18,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 19166,
+                          "total": 345000
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "paymentSystem": "33",
+                  "bin": null,
+                  "paymentName": "Cabal",
+                  "paymentGroupName": "creditCardPaymentGroup",
+                  "value": 345000,
+                  "installments": [
+                    {
+                      "count": 1,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 345000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 1,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 345000,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 3,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 115000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 3,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 115000,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 6,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 57500,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 6,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 57500,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 12,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 28750,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 12,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 28750,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 15,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 23000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 15,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 23000,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 18,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 19166,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 18,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 19166,
+                          "total": 345000
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "paymentSystem": "35",
+                  "bin": null,
+                  "paymentName": "Naranja",
+                  "paymentGroupName": "creditCardPaymentGroup",
+                  "value": 345000,
+                  "installments": [
+                    {
+                      "count": 1,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 345000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 1,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 345000,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 6,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 57500,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 6,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 57500,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 11,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 31363,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 11,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 31363,
+                          "total": 345000
+                        }
+                      ]
+                    },
+                    {
+                      "count": 12,
+                      "hasInterestRate": null,
+                      "interestRate": null,
+                      "value": 28750,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 12,
+                          "hasInterestRate": null,
+                          "interestRate": null,
+                          "value": 28750,
+                          "total": 345000
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "paymentSystem": "197",
+                  "bin": null,
+                  "paymentName": "Cencosud Pay",
+                  "paymentGroupName": "Cencosud PayPaymentGroup",
+                  "value": 345000,
+                  "installments": [
+                    {
+                      "count": 1,
+                      "hasInterestRate": false,
+                      "interestRate": 0,
+                      "value": 345000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 1,
+                          "hasInterestRate": false,
+                          "interestRate": 0,
+                          "value": 345000,
+                          "total": 345000
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "paymentSystem": "201",
+                  "bin": null,
+                  "paymentName": "Cuenta Corriente",
+                  "paymentGroupName": "custom201PaymentGroupPaymentGroup",
+                  "value": 345000,
+                  "installments": [
+                    {
+                      "count": 1,
+                      "hasInterestRate": false,
+                      "interestRate": 0,
+                      "value": 345000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 1,
+                          "hasInterestRate": false,
+                          "interestRate": 0,
+                          "value": 345000,
+                          "total": 345000
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "paymentSystem": "202",
+                  "bin": null,
+                  "paymentName": "Tarjeta de D\u00e9bito",
+                  "paymentGroupName": "custom202PaymentGroupPaymentGroup",
+                  "value": 345000,
+                  "installments": [
+                    {
+                      "count": 1,
+                      "hasInterestRate": false,
+                      "interestRate": 0,
+                      "value": 345000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 1,
+                          "hasInterestRate": false,
+                          "interestRate": 0,
+                          "value": 345000,
+                          "total": 345000
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "paymentSystem": "203",
+                  "bin": null,
+                  "paymentName": "Gift Card Cencosud",
+                  "paymentGroupName": "custom203PaymentGroupPaymentGroup",
+                  "value": 345000,
+                  "installments": [
+                    {
+                      "count": 1,
+                      "hasInterestRate": false,
+                      "interestRate": 0,
+                      "value": 345000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 1,
+                          "hasInterestRate": false,
+                          "interestRate": 0,
+                          "value": 345000,
+                          "total": 345000
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "paymentSystem": "205",
+                  "bin": null,
+                  "paymentName": "Transferencia",
+                  "paymentGroupName": "custom205PaymentGroupPaymentGroup",
+                  "value": 345000,
+                  "installments": [
+                    {
+                      "count": 1,
+                      "hasInterestRate": false,
+                      "interestRate": 0,
+                      "value": 345000,
+                      "total": 345000,
+                      "sellerMerchantInstallments": [
+                        {
+                          "id": "JUMBOARGENTINAV700CORDOBA700",
+                          "count": 1,
+                          "hasInterestRate": false,
+                          "interestRate": 0,
+                          "value": 345000,
+                          "total": 345000
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "paymentSystems": [
+                {
+                  "id": 202,
+                  "name": "Tarjeta de D\u00e9bito",
+                  "groupName": "custom202PaymentGroupPaymentGroup",
+                  "validator": null,
+                  "stringId": "202",
+                  "template": "custom202PaymentGroupPaymentGroup-template",
+                  "requiresDocument": false,
+                  "isCustom": true,
+                  "description": "",
+                  "requiresAuthentication": false,
+                  "dueDate": "2026-06-21T00:00:00Z",
+                  "availablePayments": null
+                },
+                {
+                  "id": 203,
+                  "name": "Gift Card Cencosud",
+                  "groupName": "custom203PaymentGroupPaymentGroup",
+                  "validator": null,
+                  "stringId": "203",
+                  "template": "custom203PaymentGroupPaymentGroup-template",
+                  "requiresDocument": false,
+                  "isCustom": true,
+                  "description": "Gift Card Cencosud",
+                  "requiresAuthentication": false,
+                  "dueDate": "2026-06-21T00:00:00Z",
+                  "availablePayments": null
+                },
+                {
+                  "id": 201,
+                  "name": "Cuenta Corriente",
+                  "groupName": "custom201PaymentGroupPaymentGroup",
+                  "validator": null,
+                  "stringId": "201",
+                  "template": "custom201PaymentGroupPaymentGroup-template",
+                  "requiresDocument": false,
+                  "isCustom": true,
+                  "description": "Pagar en la tienda f\u00edsica",
+                  "requiresAuthentication": false,
+                  "dueDate": "2026-06-21T00:00:00Z",
+                  "availablePayments": null
+                },
+                {
+                  "id": 205,
+                  "name": "Transferencia",
+                  "groupName": "custom205PaymentGroupPaymentGroup",
+                  "validator": null,
+                  "stringId": "205",
+                  "template": "custom205PaymentGroupPaymentGroup-template",
+                  "requiresDocument": false,
+                  "isCustom": true,
+                  "description": "Pago contra entrega",
+                  "requiresAuthentication": false,
+                  "dueDate": "2026-06-21T00:00:00Z",
+                  "availablePayments": null
+                },
+                {
+                  "id": 1,
+                  "name": "American Express",
+                  "groupName": "creditCardPaymentGroup",
+                  "validator": null,
+                  "stringId": "1",
+                  "template": "creditCardPaymentGroup-template",
+                  "requiresDocument": true,
+                  "isCustom": false,
+                  "description": null,
+                  "requiresAuthentication": false,
+                  "dueDate": "2026-06-13T16:00:00Z",
+                  "availablePayments": null
+                },
+                {
+                  "id": 2,
+                  "name": "Visa",
+                  "groupName": "creditCardPaymentGroup",
+                  "validator": null,
+                  "stringId": "2",
+                  "template": "creditCardPaymentGroup-template",
+                  "requiresDocument": true,
+                  "isCustom": false,
+                  "description": null,
+                  "requiresAuthentication": false,
+                  "dueDate": "2026-06-13T16:00:00Z",
+                  "availablePayments": null
+                },
+                {
+                  "id": 4,
+                  "name": "Mastercard",
+                  "groupName": "creditCardPaymentGroup",
+                  "validator": null,
+                  "stringId": "4",
+                  "template": "creditCardPaymentGroup-template",
+                  "requiresDocument": true,
+                  "isCustom": false,
+                  "description": null,
+                  "requiresAuthentication": false,
+                  "dueDate": "2026-06-13T16:00:00Z",
+                  "availablePayments": null
+                },
+                {
+                  "id": 33,
+                  "name": "Cabal",
+                  "groupName": "creditCardPaymentGroup",
+                  "validator": null,
+                  "stringId": "33",
+                  "template": "creditCardPaymentGroup-template",
+                  "requiresDocument": true,
+                  "isCustom": false,
+                  "description": null,
+                  "requiresAuthentication": false,
+                  "dueDate": "2026-06-13T16:00:00Z",
+                  "availablePayments": null
+                },
+                {
+                  "id": 35,
+                  "name": "Naranja",
+                  "groupName": "creditCardPaymentGroup",
+                  "validator": null,
+                  "stringId": "35",
+                  "template": "creditCardPaymentGroup-template",
+                  "requiresDocument": true,
+                  "isCustom": false,
+                  "description": null,
+                  "requiresAuthentication": false,
+                  "dueDate": "2026-06-13T16:00:00Z",
+                  "availablePayments": null
+                },
+                {
+                  "id": 197,
+                  "name": "Cencosud Pay",
+                  "groupName": "Cencosud PayPaymentGroup",
+                  "validator": null,
+                  "stringId": "197",
+                  "template": "Cencosud PayPaymentGroup-template",
+                  "requiresDocument": false,
+                  "isCustom": false,
+                  "description": null,
+                  "requiresAuthentication": false,
+                  "dueDate": "2026-06-13T16:00:00Z",
+                  "availablePayments": null
+                }
+              ],
+              "payments": [],
+              "giftCards": [],
+              "giftCardMessages": [],
+              "availableAccounts": [],
+              "availableTokens": []
+            }
+          }
+        }
+      ],
+      "Videos": [],
+      "estimatedDateArrival": null
+    }
+  ]
+}

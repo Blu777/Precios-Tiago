@@ -160,13 +160,29 @@ class SQLitePipeline:
             if precio_actual is None:
                 return item
 
+            precio_actual = float(precio_actual)
+            precio_lista_raw = item.get('precio_lista')
+            precio_lista = float(precio_lista_raw) if precio_lista_raw is not None else precio_actual
+            promocion_text = item.get('promocion')
+
+            # --- FIX: Calcular porcentaje matemático y unirlo con el texto ---
+            if precio_lista > precio_actual and precio_actual > 0:
+                calc_pct = round((1 - (precio_actual / precio_lista)) * 100)
+                math_promo = f"{calc_pct}% OFF"
+                
+                if promocion_text:
+                    # Combinar el cálculo matemático con el Teaser capturado (ej: "2x1")
+                    promocion_text = f"{math_promo} | {promocion_text}"
+                else:
+                    promocion_text = math_promo
+
             # 2. Upsert en SucursalPrecio
             stmt_precio = insert(SucursalPrecio).values(
                 producto_ean=ean,
                 supermercado_id=supermarket_id,
                 precio_actual=precio_actual,
-                precio_lista=float(item.get('precio_lista')) if item.get('precio_lista') is not None else float(precio_actual),
-                promocion=item.get('promocion'),
+                precio_lista=precio_lista,
+                promocion=promocion_text,
                 url_imagen=item.get('image_url'),
                 product_url=item.get('product_url'),
                 disponible_online=item.get('disponible_online', True)

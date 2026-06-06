@@ -241,28 +241,35 @@ class VtexDinamicoSpider(scrapy.Spider):
                 precio_lista = precio_actual
             elif precio_actual and precio_lista > precio_actual * 10:
                 # Cencosud VTEX a veces devuelve el ListPrice (Base Price sin IVA) multiplicado por 100
-                precio_lista = precio_lista / 100.0
+                # Debemos multiplicarlo por 1.21 para compararlo justamente contra el Price (que tiene IVA)
+                precio_lista = (precio_lista / 100.0) * 1.21
                 
             promocion_text = None
             teasers = active_seller.get('Teasers', [])
-            if teasers and len(teasers) > 0:
-                # Extraemos el primer teaser disponible (frecuentemente es "<name>2x1</name>")
-                # En algunas tiendas VTEX la estructura del teaser es {"<name>": "2x1", "id": "..."}
-                primer_teaser = teasers[0]
-                if '<name>' in primer_teaser:
-                    promocion_text = primer_teaser.get('<name>')
-                elif 'name' in primer_teaser:
-                    promocion_text = primer_teaser.get('name')
+            teaser_texts = []
+            if teasers:
+                for teaser in teasers:
+                    for key, val in teaser.items():
+                        if 'name' in key.lower() and isinstance(val, str):
+                            if val not in teaser_texts:
+                                teaser_texts.append(val)
+                            break
+            if teaser_texts:
+                promocion_text = " | ".join(teaser_texts)
 
-            # Fallback a productClusters si la promo es a nivel general del producto
+            # Fallback a productClusters SOLO para promociones por volumen (2x1, 3x2, etc)
+            # Excluimos porcentajes simples para evitar "promos fantasma" que no afectan la matemática.
             if not promocion_text:
                 clusters = product.get('productClusters', {})
-                promo_kws = ['2x1', '3x2', '4x2', '50%', '60%', '70%', '80%', '2do', '2da', 'segunda unidad', 'lleva 3', 'llevá 3']
+                promo_vol_kws = ['2x1', '3x2', '4x2', '2do', '2da', 'segunda', 'lleva 3', 'llevá 3']
                 for c_val in clusters.values():
-                    if isinstance(c_val, str) and any(kw in c_val.lower() for kw in promo_kws):
+                    if isinstance(c_val, str) and any(kw in c_val.lower() for kw in promo_vol_kws):
                         promocion_text = c_val
                         break
-            
+
+            # Según indicación: Se usará exclusivamente la diferencia matemática entre precio_actual y precio_lista.
+            # No se altera el precio_lista basándose en palabras clave de volumen.
+
             url_producto = link
             if url_producto and not url_producto.startswith('http'):
                 url_producto = f"{self.base_url}{url_producto}"

@@ -44,5 +44,5 @@ model SucursalPrecio {
 
   @@unique([producto_ean, supermercado_id])
   @@index([producto_ean])
-  @@index([disponible_online])
+  @@index([disponible_online, ultima_actualizacion, precio_actual])
 }

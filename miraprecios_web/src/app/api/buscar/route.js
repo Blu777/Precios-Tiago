@@ -49,7 +49,7 @@ export async function GET(request) {
                     orderBy: { precio_actual: 'asc' }
                 }
             },
-            take: Math.max(300, page * 24 + 100)
+            take: Math.min(2000, Math.max(300, page * 24 + 100))
         });
 
         const productosValidos = productos.filter(prod => prod.precios_sucursales.length > 0);
@@ -60,7 +60,7 @@ export async function GET(request) {
         for (const prod of productosValidos) {
             const normalizedEan = prod.ean ? prod.ean.replace(/^0+/, '') : null;
             // Si el producto no tiene grupo_id, agrupamos por nombre_estandarizado + marca para juntar productos idénticos
-            const key = prod.grupo_id || (prod.nombre_estandarizado ? `${prod.nombre_estandarizado.trim()}-${(prod.marca || '').trim()}` : normalizedEan);
+            const key = prod.grupo_id || (prod.nombre_estandarizado ? `${prod.nombre_estandarizado.trim()}-${(prod.marca || '').trim()}` : (normalizedEan || prod.ean));
             const existingGroup = groupsMap.get(key);
 
             if (!existingGroup) {
@@ -101,6 +101,7 @@ export async function GET(request) {
 
         const startIndex = (page - 1) * 24;
         const endIndex = startIndex + 24;
+        const hasMore = endIndex < groupedProducts.length;
         
         const finalResults = groupedProducts
             .slice(startIndex, endIndex)
@@ -128,6 +129,7 @@ export async function GET(request) {
 
         return Response.json({
             page,
+            hasMore,
             results: finalResults
         }, {
             headers: {

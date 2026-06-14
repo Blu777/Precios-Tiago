@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import CategoryNav from './CategoryNav';
 
+// Caché en memoria para las búsquedas recientes
+const searchCache = new Map();
+
 const TEXTOS = {
   noEncontramos: 'No encontramos',
   sugerencia: 'Asegurate de escribir bien la marca o intentá buscar algo más genérico.',
@@ -30,7 +33,13 @@ export default function SearchClient() {
 
   // Todo el cálculo pesado (deduplicación, joins, ordenamiento) ahora ocurre en el servidor
   useEffect(() => {
-    if (query.trim().length < 3 && !selectedCategory) {
+    if (query.trim().length > 0 && query.trim().length < 3) {
+      setResults([]);
+      setError('La búsqueda debe tener al menos 3 caracteres.');
+      return;
+    }
+
+    if (query.trim().length === 0 && !selectedCategory) {
       setResults([]);
       setError(null);
       return;
@@ -51,6 +60,12 @@ export default function SearchClient() {
             url += `&categoria=${encodeURIComponent(selectedCategory)}`;
         }
         
+        if (searchCache.has(url)) {
+          setResults(searchCache.get(url));
+          setLoading(false);
+          return;
+        }
+        
         const response = await fetch(url, {
           signal: controller.signal
         });
@@ -61,7 +76,14 @@ export default function SearchClient() {
           throw new Error(data.error || TEXTOS.errorConexion);
         }
         
-        setResults(data.results || []);
+        const fetchedResults = data.results || [];
+        
+        searchCache.set(url, fetchedResults);
+        if (searchCache.size > 50) {
+          searchCache.delete(searchCache.keys().next().value);
+        }
+        
+        setResults(fetchedResults);
       } catch (err) {
         if (err.name === 'AbortError') return;
         console.error("Error fetching data:", err);
